@@ -1,0 +1,219 @@
+.container {
+    width: 100%;
+    color: white;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #79bcb1;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.description {
+    text-align: center;
+    width: 43%;
+}
+
+.clientImage {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+
+.clientImage img {
+    width: 40px;
+}
+
+.reviewSection {
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.reviewItem {
+    width: 320px;
+    padding: 10px;
+    margin: 1rem;
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: #f9684be5;
+    border: 1px solid #ff6243e5;
+    transition: all .2s linear;
+}
+
+.reviewItem:hover {
+    border-color: #f9684be5;
+    transform: scale(1.01);
+    background-color: #d53d1fe5;
+    box-shadow: 0 0px 5px 0px #cbc0c0;
+}
+
+.top {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.top ul {
+    display: flex;
+    list-style: none;
+}
+
+.top ul li {
+    padding-left: 4px;
+}
+
+article p {
+    font-size: 15px;
+    font-weight: 100;
+    margin-bottom: 1rem;
+    font-family: system-ui;
+}
+.date{
+    margin-top: 40px;
+}
+
+@media screen and (max-width:700px) {
+    .container {
+        height: auto;
+    }
+
+    .description {
+        width: 90%;
+    }
+}
+/* Add these styles in your CSS file or within a <style> tag */
+.butn{
+    border: 1px solid #79bcb1;
+    background: white;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .butn2{
+    color: #639b92;
+    }
+    .butn2:hover{
+    color: white;
+    background-color: #ff9466;
+  }
+.reviewFormPopup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 30vw;
+    width: 100%;
+    max-width: 720px;
+    transform: translate(-50%, -50%);
+    background-image: linear-gradient(135deg, #91d6cb 10%, #ff9466 100%);
+    border: 1px solid #fff;
+    padding: 20px;
+    box-shadow: 10px 3px 10px rgba(0, 0, 0, 0.384);
+    z-index: 1000;
+}
+.title{
+    text-align: center;
+    font-size: 30px;
+}
+.reviewFormPopup .close-btn-review {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: white;
+    cursor: pointer;
+  }
+.reviewFormPopup .form-group textarea {
+  height: 100%;
+  width: 100%;
+  background: none;
+  outline: none;
+  font-size: 0.95rem;
+  padding: 0 15px;
+  border: 1px solid #ffffff;
+  color: white;
+  border-radius: 3px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.reviewFormPopup button {
+    width: 100%;
+    color: #fff;
+    border: none;
+    outline: none;
+    padding: 14px 0;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 10px;
+    background: #7dc7bbdf;
+    transition: 0.2s ease;
+  }
+  
+  .reviewFormPopup button:hover {
+    background: #ff9466;
+  }
+.show-popup-review .reviewFormPopup,
+.show-popup-review .blur-bg-overlay-review {
+    display: block;
+}
+.reviewFormPopup .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 3px;
+    background: none;
+    color: white;
+    background-color: #8dcac0;
+    outline: none;
+    font-size: 0.95rem;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .reviewFormPopup .form-group select:focus {
+    border: 1px solid #7dc7bbdf;
+    color: white;
+    background-color: #ff9466;
+    cursor: pointer;
+  }
+
+@media screen and (max-width:375px) {
+    .reviewSection {
+        padding: 0;
+    }
+
+    .reviewItem {
+        width: 100%;
+    }
+
+    .clientImage {
+        margin-bottom: 0.6rem;
+    }
+
+    .top {
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+    }
+}

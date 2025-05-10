@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/styl.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Welcome</title>
+    <style>
+      .user-type-container {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+      }
+      
+      .user-type-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        width: 300px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      
+      .user-type-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+      
+      .user-type-card i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #f97f4b;
+      }
+      
+      .user-type-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #333;
+      }
+      
+      .user-type-card p {
+        color: #666;
+        margin-bottom: 1.5rem;
+      }
+      
+      .user-type-btn {
+        background-color: #f97f4b;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .user-type-btn:hover {
+        background-color: #fe522f;
+      }
+      
+      .welcome-message {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      
+      .welcome-message h2 {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 1rem;
+      }
+      
+      .welcome-message p {
+        color: #666;
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="forms-container">
+        <div class="form">
+          <div class="signin-signup">
+            <div class="welcome-content">
+              <div class="welcome-message">
+                <h2>Welcome to Our Community</h2>
+                <p>Join us today and discover amazing services or opportunities to grow your career. Please select your role to get started.</p>
+              </div>
+              
+              <div class="user-type-container">
+                <div class="user-type-card" onclick="location.href='register.html'">
+                  <i class="fas fa-user"></i>
+                  <h3>I'm a Client</h3>
+                  <p>Looking for services? Register as a client to access our network of professionals.</p>
+                  <button class="user-type-btn">Register as Client</button>
+                </div>
+                
+                <div class="user-type-card" onclick="location.href='worker-application.php'">
+                  <i class="fas fa-briefcase"></i>
+                  <h3>I'm a Worker</h3>
+                  <p>Join our team of professionals. Apply now and start offering your services.</p>
+                  <button class="user-type-btn">Apply as Worker</button>
+                </div>
+              </div>
+              
+              <div style="text-align: center; margin-top: 2rem;">
+                <p>Already have an account? <a href="login.html" style="color: #f97f4b; font-weight: 600;">Sign In</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="panels-container">
+        <div class="panel left-panel">
+          <img src="app_images/logo1.png" class="image" alt="" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

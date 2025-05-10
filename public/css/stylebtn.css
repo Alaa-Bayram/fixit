@@ -1,0 +1,151 @@
+
+.chatbot-toggler {
+    position: fixed;
+    bottom: 30px;
+    right: 35px;
+    outline: none;
+    border: none;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #79bcb1;
+    transition: all 0.2s ease;
+    z-index: 9999;
+  }
+  
+.emergency-toggler {
+  position: fixed;
+  bottom: 90px;
+  right: 35px;
+  outline: none;
+  border: none;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ff5136;
+  transition: all 0.2s ease;
+  z-index: 999;
+}
+  .btn{
+    border: 1px solid #79bcb1;
+    background: none;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn1,.btn2{
+    color: #639b92;
+  }
+  .btn3,.btn4{
+    color: #fff;
+  }
+  .btn1:hover,.btn2:hover{
+    color: #fff;
+  }
+  .btn3:hover,.btn4:hover{
+    color: #79bcb1;
+  }
+  .btn::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: #79bcb1;
+    z-index: -1;
+    transition: 0.8s;
+  }
+  .btn1::before,.btn3::before{
+    top: 0;
+    border-radius: 0 0 50% 50%;
+  }
+  .btn2::before,.btn4::before{
+    bottom: 0;
+    border-radius: 50% 50% 0 0;
+  }
+  .btn3::before,.btn4::before{
+    height: 180%;
+  }
+  .btn1:hover::before,.btn2:hover::before{
+    height: 180%;
+  }
+  .btn3:hover::before,.btn4:hover::before{
+    height: 0%;
+  }
+  .btnFilter {
+    border: 1px solid #79bcb1;
+    font-size: 15px;
+    padding: 3px 5px;
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+    height: 30px;
+    color: white;
+    background-color: #639b92;
+  }
+  
+  .btnFilter:hover {
+    color: #fff;
+    background-color:#ff634b;
+    border: 1px solid white;
+  }
+  
+  /* Style for the select element */
+.filter{
+  float: right;
+  border: 1px solid #79bcb1;
+  margin-top: 10px;
+}
+
+  #region-select {
+    border: 1px solid #79bcb1;
+    background: none;
+    height: 30px;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 10px;
+    padding: 3px 5px;
+    color: #50867d;
+    position: relative; /* Ensure relative positioning for z-index */
+  }
+  
+  /* Arrow indicator */
+  #region-select::after {
+    content: '\25BC'; /* Unicode for downward arrow */
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none; /* Ensure the arrow does not interfere with clicking */
+  }
+  
+  /* Styling when the select is focused */
+  #region-select:focus {
+    outline: none;
+    border-color: #639b92;
+    cursor: pointer;
+  }
+  
+  /* Styling for the options */
+  #region-select option {
+    color: #79bcb1;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/register.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="javascript/register.js"></script>
+    <title>Register</title>
+  </head>
+  <body>
+    <div class="register-container">
+      <div class="register-form-container">
+        <form id="registerForm" enctype="multipart/form-data" autocomplete="off" class="sign-up-form">
+          <a href="welcome.html" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+          <h2 class="title">Sign up</h2>
+          <div class="error-text" id="formError"></div>
+          
+          <!-- Split name into first and last -->
+          <div class="name-fields">
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" id="fname" name="fname" placeholder="First Name" required>
+              <div class="error-text" id="fnameError"></div>
+            </div>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              <input type="text" id="lname" name="lname" placeholder="Last Name" required>
+              <div class="error-text" id="lnameError"></div>
+            </div>
+          </div>
+          
+          <div class="input-field">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <div class="error-text" id="emailError"></div>
+          </div>
+          
+          <div class="input-field">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
+            <div class="error-text" id="phoneError"></div>
+          </div>
+          
+        <!-- Example for password field -->
+        <div class="input-container password-container">
+            <div class="input-field password-container">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+            </div>
+            <div class="error-text" id="passwordError"></div>
+        </div>
+          
+        <div class="input-container password-container">
+            <div class="input-field password-container">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+              <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
+            </div>
+            <div class="error-text" id="confirmPasswordError"></div>
+          </div>
+          
+          <div class="input-field">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" id="address" name="address" placeholder="Address" required>
+            <div class="error-text" id="addressError"></div>
+          </div>
+          
+          <!-- Region dropdown -->
+          <div class="input-field">
+            <i class="fas fa-globe"></i>
+            <select id="region" name="region" required>
+                <option value="" disabled selected>Region</option>
+                <option value="Beirut">Beirut</option>
+                <option value="Baalbek-Hermel">Baalbek-Hermel</option>
+                <option value="Bekaa">Bekaa</option>
+                <option value="South Lebanon">South Lebanon</option>
+                <option value="Nabatieh">Nabatieh</option>
+                <option value="Mount Lebanon">Mount Lebanon</option>
+                <option value="North Lebanon">North Lebanon</option>
+                <option value="Akkar">Akkar</option>
+            </select>
+            <i class="fas fa-chevron-down select-arrow"></i>
+            <div class="error-text" id="regionError"></div>
+          </div>
+          
+          <div class="img-upload-container">
+            <label class="img-upload-label">Profile Image (Optional)</label>
+            <div class="img-upload" id="imgUpload">
+                <i class="fas fa-camera"></i>
+                <p>Click to upload your photo (optional)</p>
+                <small>JPG, PNG (max 5MB)</small>
+                <input type="file" id="img" name="img" accept="image/*">
+            </div>
+            <div class="img-preview" id="imgPreview"></div>
+            <div class="error-text" id="imgError"></div>
+          </div>
+          
+          <div class="field button">
+            <input type="submit" name="submit" value="Sign Up" class="btn">
+          </div>
+          
+          <p class="login-link">Already have an account? <a href="login.html">Sign In</a></p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
