@@ -1,3 +1,8 @@
+<?php
+$servicePages = ['services.php', 'all_services.php', 'edit_service.php', 'delete_service.php'];
+$isServicesActive = in_array($currentPage, $servicePages);
+?>
+
 <div class="sidebar">
     <div class="logo-details">
         <img src="assets/images/logo1.png" class="logo" alt="FixIt Logo">
@@ -16,13 +21,13 @@
             </a>
         </li>
         <li>
-            <a href="clients.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'clients.php' ? 'active' : ''; ?>">
+            <a href="view_approved_workers.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'view_approved_workers.php' ? 'active' : ''; ?>">
                 <i class="bx bx-user-check"></i>
                 <span class="links_name">FixIt App Workers </span>
             </a>
         </li>
         <li>
-            <a href="services.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'services.php' ? 'active' : ''; ?>">
+            <a href="services.php" class="<?php echo $isServicesActive ? 'active' : ''; ?>">
                 <i class="bx bx-wrench"></i>
                 <span class="links_name">Services</span>
             </a>

@@ -155,25 +155,35 @@ include_once 'includes/header.php';
 </div>
 
 <style>
+.sales-boxes {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
 .worker-requests-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
     list-style: none;
     padding: 0;
 }
 
 .worker-request-item {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
     padding: 20px;
-    border-bottom: 1px solid var(--gray-light);
-    margin-bottom: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100%;
+    width: 350px;
 }
 
 .worker-profile {
     display: flex;
     flex: 1;
-    min-width: 300px;
 }
 
 .worker-profile img {
@@ -203,7 +213,18 @@ include_once 'includes/header.php';
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    align-items: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: center;
+    width: 100%;
 }
 
 .btn {
@@ -227,6 +248,8 @@ include_once 'includes/header.php';
     background-color: var(--dark);
     color: white;
     text-decoration: none;
+    width: auto;
+    display: inline-block;
 }
 
 .btn-download:hover {
@@ -257,6 +280,7 @@ include_once 'includes/header.php';
     padding: 10px 15px;
     margin-bottom: 20px;
     border-radius: var(--radius-sm);
+    grid-column: 1 / -1;
 }
 
 .alert-success {
@@ -271,7 +295,17 @@ include_once 'includes/header.php';
     border-left: 4px solid var(--danger);
 }
 
+@media (max-width: 1200px) {
+    .worker-requests-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
+    .worker-requests-list {
+        grid-template-columns: 1fr;
+    }
+    
     .worker-profile {
         flex-direction: column;
     }
@@ -281,8 +315,8 @@ include_once 'includes/header.php';
         margin-bottom: 15px;
     }
     
-    .worker-actions {
-        width: 100%;
+    .action-buttons {
+        flex-direction: column;
     }
 }
 </style>

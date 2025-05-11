@@ -16,6 +16,8 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $search_term = sanitize_input($_GET['search']);
     $search_results = search_workers_services($pdo, $search_term);
 }
+
+$currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 
 <!DOCTYPE html>
