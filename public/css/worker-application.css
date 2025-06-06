@@ -18,20 +18,39 @@
   font-family: 'Poppins', sans-serif;
 }
 
+/* Add this at the top of your CSS file */
 body {
-  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../images/fees1.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(3px);
+  z-index: -1;
 }
 
 .worker-container {
   max-width: 800px;
   margin: 2rem auto;
   padding: 0 1rem;
+  position: relative;
 }
 
 .application-form {
-  background: white;
+  background: #ffffff57;
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.608);
   padding: 2rem;
   position: relative;
   overflow: hidden;

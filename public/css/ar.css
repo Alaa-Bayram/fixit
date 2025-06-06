@@ -1,0 +1,210 @@
+/* RTL/LTR base styles */
+.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Header adjustments for RTL */
+.rtl header .content {
+  margin-right: 10%;
+  margin-left: auto;
+}
+
+.ltr header .content {
+  margin-left: 10%;
+  margin-right: auto;
+}
+
+/* Base RTL/LTR styles */
+.rtl, .rtl-header {
+  direction: rtl;
+}
+
+.ltr, .ltr-header {
+  direction: ltr;
+}
+
+/* Header specific adjustments */
+.rtl-header .content {
+  margin-right: 10%;
+  margin-left: auto;
+  text-align: right;
+}
+
+.ltr-header .content {
+  margin-left: 10%;
+  margin-right: auto;
+  text-align: left;
+}
+
+/* Text content alignment */
+.rtl-header .text-content {
+  right: 50px;
+  left: auto;
+  text-align: right;
+}
+
+.ltr-header .text-content {
+  left: 50px;
+  right: auto;
+  text-align: left;
+}
+
+/* Typing text adjustments */
+.rtl-header .typing-text {
+  text-align: right;
+}
+
+.ltr-header .typing-text {
+  text-align: left;
+}
+
+/* Button container adjustments */
+.rtl-header .buttons {
+  justify-content: flex-end;
+  padding-right: 0;
+  padding-left: 20px;
+}
+
+.ltr-header .buttons {
+  justify-content: flex-start;
+  padding-left: 0;
+  padding-right: 20px;
+}
+
+/* Button spacing */
+.rtl-header .buttons a {
+  margin-left: 15px;
+  margin-right: 0;
+}
+
+.ltr-header .buttons a {
+  margin-right: 15px;
+  margin-left: 0;
+}
+
+
+/* Homepage image positioning */
+.homepage.rtl img {
+  transform: scaleX(-1); /* Flip image horizontally for RTL */
+  float: right;
+}
+
+.homepage.ltr img {
+  float: left;
+}
+
+/* Typing text adjustments */
+.rtl .typing-text {
+  text-align: right;
+}
+
+.ltr .typing-text {
+  text-align: left;
+}
+
+/* Button container adjustments */
+.rtl .buttons {
+  justify-content: flex-end;
+}
+
+.ltr .buttons {
+  justify-content: flex-start;
+}
+
+/* Button spacing */
+.rtl .buttons a:not(:last-child) {
+  margin-left: 15px;
+  margin-right: 0;
+}
+
+.ltr .buttons a:not(:last-child) {
+  margin-right: 15px;
+  margin-left: 0;
+}
+/*emergency page */
+
+.emForm {
+    display: flex;
+    font-size: 18px;
+    flex-direction: column;
+    padding: 2vw;
+    align-items: center;
+    border-top: 1px solid #7dc7bb65;
+    border-bottom: 1px solid #7dc7bb65;
+    width: 50vw;
+    margin: 3vw auto; /* Changed from margin-left to auto for centering */
+    margin-bottom: 5vw;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.077);
+}
+
+/* RTL specific adjustments */
+[dir="rtl"] .emForm {
+    margin-right: auto; /* Ensure centering in RTL */
+    margin-left: auto;
+}
+
+/* Background image styles - works for both RTL and LTR */
+.emForm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../images/em.avif');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: blur(3px);
+    z-index: -2;
+}
+
+.emForm::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.341);
+    z-index: -1;
+}
+
+/* Submit button centering */
+.submit {
+    background-color: #4bb4a2b8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+    margin-left: auto; /* Center the button */
+    margin-right: auto;
+    display: block;
+}
+
+/* Form elements alignment */
+[dir="rtl"] .form-group label,
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select {
+    text-align: right;
+}
+
+[dir="ltr"] .form-group label,
+[dir="ltr"] input,
+[dir="ltr"] textarea,
+[dir="ltr"] select {
+    text-align: left;
+}

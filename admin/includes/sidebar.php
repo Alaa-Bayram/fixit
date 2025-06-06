@@ -1,6 +1,26 @@
 <?php
+// Include the language file to access translations
+include_once 'lang.php';
+
 $servicePages = ['services.php', 'all_services.php', 'edit_service.php', 'delete_service.php'];
 $isServicesActive = in_array($currentPage, $servicePages);
+
+$ArticlesPages = ['articles.php', 'all_articles.php', 'edit_article.php', 'delete_article.php'];
+$isArticlesActive = in_array($currentPage, $ArticlesPages);
+
+$DashboardPages = ['index.php','appointments.php'];
+$isDashboardActive = in_array($currentPage, $DashboardPages);
+
+$TipsPages = ['tips.php','edit_dailyTip.php','edit_seasonalTip.php','all_tips.php'];
+$isTipsActive = in_array($currentPage, $TipsPages);
+
+// Function to build URL with current language
+function buildLangUrl($page, $lang) {
+    return $page . '?lang=' . $lang;
+}
+
+// Get current language
+$currentLang = $_SESSION['lang'] ?? 'en';
 ?>
 
 <div class="sidebar">
@@ -9,51 +29,51 @@ $isServicesActive = in_array($currentPage, $servicePages);
     </div>
     <ul class="nav-links">
         <li>
-            <a href="index.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">
+            <a href="<?php echo buildLangUrl('index.php', $currentLang); ?>" class="<?php echo $isDashboardActive ? 'active' : ''; ?>">
                 <i class="bx bx-grid-alt"></i>
-                <span class="links_name">Dashboard</span>
+                <span class="links_name"><?php echo $trans['dashboard']; ?></span>
             </a>
         </li>
         <li>
-            <a href="workers.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'workers.php' ? 'active' : ''; ?>">
+            <a href="<?php echo buildLangUrl('workers.php', $currentLang); ?>" class="<?php echo basename($_SERVER['PHP_SELF']) == 'workers.php' ? 'active' : ''; ?>">
                 <i class="bx bx-user-plus"></i>
-                <span class="links_name">Workers Requests</span>
+                <span class="links_name"><?php echo $trans['workers_requests']; ?></span>
             </a>
         </li>
         <li>
-            <a href="view_approved_workers.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'view_approved_workers.php' ? 'active' : ''; ?>">
+            <a href="<?php echo buildLangUrl('view_approved_workers.php', $currentLang); ?>" class="<?php echo basename($_SERVER['PHP_SELF']) == 'view_approved_workers.php' ? 'active' : ''; ?>">
                 <i class="bx bx-user-check"></i>
-                <span class="links_name">FixIt App Workers </span>
+                <span class="links_name"><?php echo $trans['fixit_app_workers']; ?></span>
             </a>
         </li>
         <li>
-            <a href="services.php" class="<?php echo $isServicesActive ? 'active' : ''; ?>">
+            <a href="<?php echo buildLangUrl('services.php', $currentLang); ?>" class="<?php echo $isServicesActive ? 'active' : ''; ?>">
                 <i class="bx bx-wrench"></i>
-                <span class="links_name">Services</span>
+                <span class="links_name"><?php echo $trans['services']; ?></span>
             </a>
         </li>
         <li>
-            <a href="Articles.php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>">
+            <a href="<?php echo buildLangUrl('articles.php', $currentLang); ?>" class="<?php echo $isArticlesActive ? 'active' : ''; ?>">
                 <i class="bx bx-book-content"></i>
-                <span class="links_name">Articles</span>
+                <span class="links_name"><?php echo $trans['articles']; ?></span>
             </a>
         </li>
         <li>
-            <a href=".php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>">
+            <a href="<?php echo buildLangUrl('tips.php', $currentLang); ?>" class="<?php echo $isTipsActive ? 'active' : ''; ?>">
                 <i class="bx bx-bulb"></i>
-                <span class="links_name">Tips</span>
+                <span class="links_name"><?php echo $trans['tips']; ?></span>
             </a>
         </li>
         <li>
-            <a href=".php" class="<?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>">
+            <a href="<?php echo buildLangUrl('client_reviews.php', $currentLang); ?>" class="<?php echo basename($_SERVER['PHP_SELF']) == 'client_reviews.php' ? 'active' : ''; ?>">
                 <i class="bx bx-message"></i>
-                <span class="links_name">Client Reviews</span>
+                <span class="links_name"><?php echo $trans['client_reviews']; ?></span>
             </a>
         </li>
         <!-- <li class="log_out">
-            <a href="logout.php">
+            <a href="<?php echo buildLangUrl('logout.php', $currentLang); ?>">
                 <i class="bx bx-log-out"></i>
-                <span class="links_name">Log out</span>
+                <span class="links_name"><?php echo $trans['logout']; ?></span>
             </a>
         </li> -->
     </ul>

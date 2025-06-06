@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // ==================== Review Popup Functionality ====================
     const showReviewPopupButtons = document.querySelectorAll(".add-review-btn");
     const formPopupReview = document.querySelector(".form-popup-review");
     const blurOverlayReview = document.querySelector(".blur-bg-overlay-review");
-    const closePopupBtnReview = formPopupReview.querySelector(".close-btn-review");
+    const closePopupBtnReview = formPopupReview?.querySelector(".close-btn-review");
     const reviewWorkerNameField = document.getElementById("review-worker-name");
     const reviewWorkerIdField = document.getElementById("review-worker-id");
     const reviewWorkerServiceField = document.getElementById("review-worker-service");
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (data.success) {
                         alert('Review added successfully!');
                         document.body.classList.remove("show-popup-review");
-                        reviewForm.reset(); // Reset form after successful submission
+                        reviewForm.reset();
                     } else {
                         alert('Failed to add review: ' + data.message);
                     }
@@ -64,10 +65,78 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert('An error occurred. Please try again.');
                 });
             });
-        } else {
-            console.error("Review form not found");
         }
-    } else {
-        console.error("One or more required review elements not found");
+    }
+
+    // ==================== Services Fetching and Search Functionality ====================
+    // Get current language from URL or default to 'en'
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentLang = urlParams.get('lang') || 'en';
+    
+    // Pass language to API
+    fetch(`../api/services.php?lang=${currentLang}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log('Fetched services:', data);
+
+        if (!Array.isArray(data)) {
+            console.error('Expected an array but got:', data);
+            return;
+        }
+
+        const servicesContainer = document.createElement('ul');
+        servicesContainer.className = 'cards';
+
+        data.forEach(service => {
+            const li = document.createElement('li');
+            li.className = 'card';
+            li.setAttribute('data-name', service.title);
+            li.innerHTML = `
+                <img src="images/${service.images}" alt="${service.title}">
+                <h3>${service.title}</h3>
+                <p>${service.description}</p>
+                <a href="list_workers.php?service_id=${encodeURIComponent(service.service_id)}&lang=${currentLang}">
+                    <button class="btn btn2">${document.documentElement.lang === 'fr' ? 'Réserver' : 
+                                           document.documentElement.lang === 'ar' ? 'احجز الان' : 
+                                           'Book Now'}</button>
+                </a>
+            `;
+            servicesContainer.appendChild(li);
+        });
+
+        const servicesList = document.getElementById('services-list');
+        if (servicesList) {
+            servicesList.appendChild(servicesContainer);
+            setupSearchFunctionality(); // Initialize search after cards are loaded
+        }
+    })
+    .catch(error => console.error('Error fetching services:', error));
+
+    function setupSearchFunctionality() {
+        const search = document.querySelector(".search-box input");
+        const cards = document.querySelectorAll(".card");
+
+        if (search && cards.length > 0) {
+            search.addEventListener("keyup", () => {
+                const searchValue = search.value.trim().toLowerCase();
+
+                cards.forEach(card => {
+                    const cardName = card.getAttribute("data-name").toLowerCase();
+                    if (cardName.includes(searchValue)) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+            });
+
+            search.addEventListener("keyup", () => {
+                if (search.value === "") {
+                    cards.forEach(card => {
+                        card.style.display = "block";
+                    });
+                }
+            });
+        }
     }
 });

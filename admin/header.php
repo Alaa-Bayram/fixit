@@ -1,6 +1,8 @@
 <?php
 
-include_once "php/config.php";
+session_start();
+include_once "includes/config.php";
+include('lang.php');
 
 // Fetch admin details for the profile display
 $query = "SELECT * FROM users WHERE usertype='admin'";
@@ -18,7 +20,7 @@ if (!$result) {
     </div>
     <form method="GET" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
         <div class="search-box">
-            <input type="text" name="search" placeholder="Search for workers or service" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
+            <input type="text" name="search" placeholder="<?php echo isset($trans['search_placeholder']) ? $trans['search_placeholder'] : 'Search for workers or services'; ?>" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" />
             <button type="submit"><i class="bx bx-search"></i></button>
         </div>
     </form>
@@ -27,9 +29,10 @@ if (!$result) {
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result); // Fetch first row (assuming there's only one admin)
     ?>
-    <div class="profile-details">
-        <img src="images/profile1.jpg" alt="Profile Image" />
-        <span class="admin_name"><?php echo htmlspecialchars($row['fname']) . ' ' . htmlspecialchars($row['lname']); ?></span>
-    </div>
+
+        <div class="profile-details">
+            <img src="" alt="Profile Image" />
+            <span class="admin_name"><?php echo htmlspecialchars($row['fname']) . ' ' . htmlspecialchars($row['lname']); ?></span>
+        </div>
     <?php } ?>
 </nav>

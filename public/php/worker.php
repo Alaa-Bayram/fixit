@@ -65,15 +65,25 @@ try {
         throw new Exception("Failed to upload PDF!");
     }
 
+    // Get skill title from services table
+    $service_id = mysqli_real_escape_string($conn, $_POST['service_id']);
+    $skill_query = mysqli_query($conn, "SELECT title FROM services WHERE service_id = '{$service_id}'");
+    if (!$skill_query || mysqli_num_rows($skill_query) === 0) {
+        throw new Exception("Invalid service selected!");
+    }
+    $skill = mysqli_fetch_assoc($skill_query);
+    $skills_title = mysqli_real_escape_string($conn, $skill['title']);
+
     // Prepare data
     $data = [
         'unique_id' => rand(time(), 100000000),
         'fname' => mysqli_real_escape_string($conn, $_POST['fname']),
         'lname' => mysqli_real_escape_string($conn, $_POST['lname']),
         'email' => $email,
-        'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
+        'password' => password_hash("fixit@2025", PASSWORD_DEFAULT), // Auto-set password
         'phone' => mysqli_real_escape_string($conn, $_POST['phone']),
-        'service_id' => mysqli_real_escape_string($conn, $_POST['service_id']),
+        'service_id' => $service_id,
+        'skills' => $skills_title, // Set from services table
         'experience' => (int)$_POST['experience'],
         'region' => mysqli_real_escape_string($conn, $_POST['region']),
         'address' => mysqli_real_escape_string($conn, $_POST['address']),
@@ -84,11 +94,6 @@ try {
         'usertype' => 'worker',
         'access_status' => 'pending'
     ];
-
-    // Get skill title
-    $skill_query = mysqli_query($conn, "SELECT title FROM services WHERE service_id = '{$data['service_id']}'");
-    $skill = mysqli_fetch_assoc($skill_query);
-    $data['skills'] = mysqli_real_escape_string($conn, $skill['title']);
 
     // Build SQL query
     $columns = implode(', ', array_keys($data));

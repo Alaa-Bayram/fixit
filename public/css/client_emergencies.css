@@ -1,0 +1,321 @@
+/* Client Emergencies Page Styles */
+.client-emergencies-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 100px; /* Account for fixed navbar */
+}
+
+/* Page Header */
+.client-emergencies-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.client-header-content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ff5100db;
+    margin-bottom: 8px;
+}
+
+.client-subtitle {
+    color: #4a5568;
+    margin-bottom: 20px;
+}
+
+.client-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.client-stat-item {
+    background: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    min-width: 120px;
+}
+
+.client-stat-number {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: rgba(255, 81, 0, 0.858);
+    line-height: 1;
+}
+
+.client-stat-label {
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+.client-new-request-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: rgba(255, 81, 0, 0.858);
+    color: white;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.client-new-request-btn:hover {
+    background-color: rgba(255, 81, 0, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 81, 0, 0.2);
+}
+
+.client-new-request-btn i {
+    margin-right: 8px;
+}
+
+/* Action Bar */
+.client-action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.client-search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    min-width: 250px;
+}
+
+.client-search-box i {
+    color: #718096;
+    margin-right: 10px;
+}
+
+.client-search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+.client-filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+.client-filter-btn {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.client-filter-btn:hover {
+    background: #f8fafc;
+}
+
+.client-filter-btn.active {
+    background: rgba(255, 81, 0, 0.858);
+    color: white;
+    border-color: rgba(255, 81, 0, 0.858);
+}
+
+/* Emergencies Grid */
+.client-emergencies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.client-emergency-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.client-emergency-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.client-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #7dc7bb21;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.client-request-id {
+    font-size: 0.8rem;
+    color: #718096;
+    font-weight: 500;
+}
+
+.client-status-badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background-color: #f6ad55; /* Yellow for pending */
+    color: white;
+}
+
+.status-other {
+    background-color: #68d391; /* Green for other statuses */
+    color: white;
+}
+
+.client-card-body {
+    padding: 20px;
+}
+
+.client-card-body h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #2d3748;
+}
+
+.client-description {
+    color: #4a5568;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.client-meta-info {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #718096;
+}
+
+.client-meta-info i {
+    margin-right: 5px;
+}
+
+.client-card-footer {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #e2e8f0;
+    gap: 10px;
+}
+
+.client-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    flex: 1;
+    border: none;
+    cursor: pointer;
+}
+
+.client-action-btn i {
+    margin-right: 6px;
+}
+
+.client-action-btn.primary {
+    background: #7dc7bb;
+    color: white;
+}
+
+.client-action-btn.primary:hover {
+    background: #6bb3a9;
+}
+
+.client-action-btn.danger {
+    background: #ff510084;
+    color: white;
+}
+
+.client-action-btn.danger:hover {
+    background: #ff5100df;
+}
+
+/* Empty State */
+.client-empty-state {
+    background: white;
+    padding: 40px 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-top: 30px;
+}
+
+.client-empty-icon {
+    font-size: 3rem;
+    color: #7dc7bb;
+    margin-bottom: 15px;
+}
+
+.client-empty-state h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #2d3748;
+}
+
+.client-empty-state p {
+    color: #4a5568;
+    margin-bottom: 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .client-emergencies-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .client-stats {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .client-stat-item {
+        flex: 1;
+        min-width: auto;
+    }
+    
+    .client-action-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .client-search-box {
+        width: 100%;
+    }
+    
+    .client-filter-group {
+        justify-content: center;
+    }
+}

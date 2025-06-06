@@ -1,0 +1,195 @@
+
+.user{
+    margin-top: 120px;
+    margin-left: 30px;
+}
+.emHeader{
+    margin-top: 120px;
+    text-align: center;
+}
+.emNote{
+    margin-top: 10px;
+    text-align: center;
+}
+b{
+    color:rgb(255, 81, 0);
+}
+.emForm {
+    display: flex;
+    font-size: 18px;
+    flex-direction: column;
+    padding: 2vw;
+    align-items: center;
+    border-top: 1px solid #7dc7bb65;
+    border-bottom: 1px solid #7dc7bb65;
+    width: 50vw;
+    margin-top: 3vw;
+    margin-left: 25vw;
+    margin-bottom: 5vw;
+    position: relative;
+    overflow: hidden; /* Ensure the blur effect doesn't overflow */
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.077);
+}
+.emForm::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../images/em.avif');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: blur(3px); /* Adjust the blur radius as needed */
+    z-index: -2; /* Place the blurred image behind everything */
+}
+
+.emForm::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.341); /* Adjust the transparency */
+    z-index: -1; /* Place the overlay behind the content but in front of the image */
+}
+
+.emForm > * {
+    position: relative;
+    z-index: 1; /* Ensure the content is above both pseudo-elements */
+}
+.imgEm{
+    float: left;width:640px;height:700px;margin-top:90px;margin-left:100px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+.form-group{
+    margin-bottom: 10px;
+}
+.form-group label{
+    background-color: #4bb4a2b8;
+    padding: 3px;
+    color: white;
+}
+/* New CSS for beautiful inputs */
+input[type="text"],
+input[type="tel"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    border: 1px solid #4bb4a2b8;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.581);
+}
+
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="file"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #4bb4a2;
+    outline: none;
+    box-shadow: 0 0 5px rgba(75, 180, 162, 0.5);
+}
+
+
+
+.submit {
+    background-color: #4bb4a2b8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+    margin-left: 200px;
+
+}
+
+.submit:hover {
+    background-color: rgb(255, 81, 0);
+}
+
+.sub{
+    background-color: #ffa278b1;
+    color: white;
+    border: none;
+    padding: 5px 20px;
+    font-size: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+.sub:hover {
+    background-color: rgb(255, 81, 0);
+}
+.sub a{
+    text-decoration: none;
+    color: white;
+}
+.icon-left {
+    transform: rotate(-90deg);
+    display: inline-block;
+    font-size: 15px;
+}
+.camera-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.camera-button {
+    background-color: #4bb4a2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.camera-button:hover {
+    background-color: #43a292;
+}
+
+#videoContainer {
+    display: none;
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#video {
+    width: 100%;
+    display: block;
+}
+
+#capturedImage {
+    width: 100%;
+    display: none; /* Initially hide the captured image */
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#imageName {
+    display: none; /* Initially hide the image name */
+    font-style: italic;
+    margin-top: 5px;
+    color: #555;
+}

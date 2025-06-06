@@ -1,6 +1,6 @@
 <?php
 require_once 'includes/config.php';
-require_once 'includes/functions.php'; // Assuming you have a functions file
+require_once 'includes/functions.php'; 
 
 // Security headers (add to config.php if possible)
 header("X-Frame-Options: DENY");
@@ -141,15 +141,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="input-field">
                     <i class="bx bx-envelope" aria-hidden="true"></i>
-                    <input type="email" name="email" id="email" required autocomplete="email" aria-describedby="emailHelp">
-                    <label for="email">Email Address</label>
+                    <input type="email" name="email" id="email" placeholder="Email Address" required autocomplete="email" aria-describedby="emailHelp">
                     <span id="emailHelp" class="visually-hidden">Please enter your admin email address</span>
                 </div>
                 
                 <div class="input-field">
                     <i class="bx bx-lock-alt" aria-hidden="true"></i>
-                    <input type="password" name="password" id="password" required autocomplete="current-password" minlength="8" aria-describedby="passwordHelp">
-                    <label for="password">Password</label>
+                    <input type="password" name="password" placeholder="Password" id="password" required autocomplete="current-password" minlength="8" aria-describedby="passwordHelp">
                     <span id="passwordHelp" class="visually-hidden">Please enter your password (minimum 8 characters)</span>
                 </div>
                 

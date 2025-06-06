@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         errorText.textContent = result.message;
                     }
                 } else {
-                    errorText.textContent = "Server error. Try again later.";
+                    errorText.textContent = "Passowrd or Email dont match !";
                 }
             } catch (error) {
                 console.error(error);

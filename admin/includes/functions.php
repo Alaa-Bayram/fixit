@@ -57,6 +57,19 @@ function get_total_services($pdo) {
     }
 }
 
+// Get total services
+function get_total_articles($pdo) {
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM articles");
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        error_log('Database Error: ' . $e->getMessage());
+        return 0;
+    }
+}
+
+
 // Get top requested services
 function get_top_services($pdo, $limit = 3) {
     try {

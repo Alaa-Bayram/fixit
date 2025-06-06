@@ -647,13 +647,13 @@ a:hover {
   align-items: center;
   min-height: 100vh;
   width: 100%;
+  backdrop-filter: blur(3px);
 }
 
 .login-wrapper {
   width: 100%;
   max-width: 400px;
   padding: var(--spacing-xl);
-  background: white;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
 }
@@ -728,6 +728,7 @@ a:hover {
   color: var(--gray);
   pointer-events: none;
   transition: all 0.3s ease;
+  border-radius: 3px;
 }
 
 .input-field input:focus ~ label,
