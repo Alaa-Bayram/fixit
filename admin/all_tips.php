@@ -2,13 +2,63 @@
 require_once 'includes/config.php';
 require_once 'includes/functions.php';
 
+// Include language file
+require_once 'lang.php';
+
 // Redirect if not logged in
 if (!is_admin_logged_in()) {
-    redirect('login.php', 'Please log in to access the dashboard');
+    redirect('login.php', $trans['please_log_in']);
 }
 
-// Include tips data
+// Include tips data (now with translation support)
 require_once 'includes/tips_data.php';
+
+// Handle tip deletion if requested
+if (isset($_POST['delete_tip']) && isset($_POST['tip_id'])) {
+    // Verify CSRF token
+    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        set_flash_message('error', 'Invalid form submission.');
+    } else {
+        $tip_id = sanitize_input($_POST['tip_id']);
+
+        try {
+            // Get image filename before deletion
+            $stmt = $pdo->prepare("SELECT images FROM tips WHERE tip_id = :tip_id");
+            $stmt->bindParam(':tip_id', $tip_id);
+            $stmt->execute();
+            $tip = $stmt->fetch();
+
+            if ($tip) {
+                // Delete from database
+                $stmt = $pdo->prepare("DELETE FROM tips WHERE tip_id = :tip_id");
+                $stmt->bindParam(':tip_id', $tip_id);
+
+                if ($stmt->execute()) {
+                    // Delete image file if it exists
+                    if (!empty($tip['images'])) {
+                        $image_path = '../public/images/tips/' . $tip['images'];
+                        if (file_exists($image_path)) {
+                            unlink($image_path);
+                        }
+                    }
+
+                    set_flash_message('success', $trans['tip_deleted_successfully']);
+                } else {
+                    set_flash_message('error', $trans['failed_delete_tip']);
+                }
+            } else {
+                set_flash_message('error', $trans['tip_not_found']);
+            }
+        } catch (PDOException $e) {
+            error_log('Database Error: ' . $e->getMessage());
+            set_flash_message('error', $trans['database_error']);
+        }
+    }
+
+    // Refresh the page to show updated data
+    header('Location: all_tips.php?lang=' . $lang);
+    exit();
+}
 
 // Include header
 include_once 'includes/header.php';
@@ -17,7 +67,7 @@ include_once 'includes/header.php';
 <div class="home-content">
     <div class="sales-boxes">
         <div class="recent-sales box">
-            <div class="title">All Tips</div>
+            <div class="title"><?php echo $trans['all_tips']; ?></div>
 
             <?php if (has_flash_message('success')): ?>
                 <div class="alert alert-success"><?php echo get_flash_message('success'); ?></div>
@@ -29,12 +79,12 @@ include_once 'includes/header.php';
 
             <!-- Daily Tips Section -->
             <div class="tips-section">
-                <h2 class="section-title">Daily Tips</h2>
+                <h2 class="section-title"><?php echo $trans['daily_tips']; ?></h2>
                 <div class="tips-grid">
-                    <?php if (empty($all_tips)): ?>
-                        <div class="no-data">No daily tips available</div>
+                    <?php if (empty($daily_tips)): ?>
+                        <div class="no-data"><?php echo $trans['no_daily_tips_available']; ?></div>
                     <?php else: ?>
-                        <?php foreach ($all_tips as $tip): ?>
+                        <?php foreach ($daily_tips as $tip): ?>
                             <div class="tip-card">
                                 <?php if (!empty($tip['images'])): ?>
                                     <div class="tip-image">
@@ -44,21 +94,28 @@ include_once 'includes/header.php';
                                 <div class="tip-details">
                                     <h3><?php echo h($tip['title']); ?></h3>
                                     <p><?php echo h($tip['description']); ?></p>
+                                    <?php if (!empty($tip['f_tip'])): ?>
+                                        <div class="tip-content">
+                                            <strong><?php echo $trans['first_tip']; ?>:</strong>
+                                            <p><?php echo h($tip['f_tip']); ?></p>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($tip['s_tip'])): ?>
+                                        <div class="tip-content">
+                                            <strong><?php echo $trans['second_tip']; ?>:</strong>
+                                            <p><?php echo h($tip['s_tip']); ?></p>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="tip-actions">
-                                    <form action="edit_dailyTip.php" method="POST" style="display: inline;">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                    <a href="edit_dailyTip.php?id=<?php echo h($tip['tip_id']); ?>&lang=<?php echo $lang; ?>" class="btn btn-edit">
+                                        <i class="bx bx-edit"></i> <?php echo $trans['edit']; ?>
+                                    </a>
+                                    <form method="POST" onsubmit="return confirm('<?php echo $trans['confirm_delete_tip']; ?>');">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
                                         <input type="hidden" name="tip_id" value="<?php echo h($tip['tip_id']); ?>">
-                                        <button type="submit" class="btn btn-edit">
-                                            <i class="bx bx-edit"></i> Edit
-                                        </button>
-                                    </form>
-                                    <form method="POST" action="includes/delete_tip.php" onsubmit="return confirm('Are you sure you want to delete this tip?');" style="display: inline;">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                        <input type="hidden" name="tip_id" value="<?php echo h($tip['tip_id']); ?>">
-                                        <input type="hidden" name="tip_type" value="daily tips">
-                                        <button type="submit" class="btn btn-delete">
-                                            <i class="bx bx-trash"></i> Delete
+                                        <button type="submit" name="delete_tip" class="btn btn-delete">
+                                            <i class="bx bx-trash"></i> <?php echo $trans['delete']; ?>
                                         </button>
                                     </form>
                                 </div>
@@ -70,31 +127,43 @@ include_once 'includes/header.php';
 
             <!-- Seasonal Tips Section -->
             <div class="tips-section">
-                <h2 class="section-title">Seasonal Tips</h2>
+                <h2 class="section-title"><?php echo $trans['seasonal_tips']; ?></h2>
                 <div class="tips-grid">
-                    <?php if (empty($all_seasonal_tips)): ?>
-                        <div class="no-data">No seasonal tips available</div>
+                    <?php if (empty($seasonal_tips)): ?>
+                        <div class="no-data"><?php echo $trans['no_seasonal_tips_available']; ?></div>
                     <?php else: ?>
-                        <?php foreach ($all_seasonal_tips as $tip): ?>
+                        <?php foreach ($seasonal_tips as $tip): ?>
                             <div class="tip-card">
+                                <?php if (!empty($tip['images'])): ?>
+                                    <div class="tip-image">
+                                        <img src="../public/images/tips/<?php echo h($tip['images']); ?>" alt="<?php echo h($tip['title']); ?>">
+                                    </div>
+                                <?php endif; ?>
                                 <div class="tip-details">
                                     <h3><?php echo h($tip['title']); ?></h3>
                                     <p><?php echo h($tip['description']); ?></p>
+                                    <?php if (!empty($tip['f_tip'])): ?>
+                                        <div class="tip-content">
+                                            <strong><?php echo $trans['first_tip']; ?>:</strong>
+                                            <p><?php echo h($tip['f_tip']); ?></p>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($tip['s_tip'])): ?>
+                                        <div class="tip-content">
+                                            <strong><?php echo $trans['second_tip']; ?>:</strong>
+                                            <p><?php echo h($tip['s_tip']); ?></p>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="tip-actions">
-                                    <form action="edit_seasonalTip.php" method="POST" style="display: inline;">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                    <a href="edit_seasonalTip.php?id=<?php echo h($tip['tip_id']); ?>&lang=<?php echo $lang; ?>" class="btn btn-edit">
+                                        <i class="bx bx-edit"></i> <?php echo $trans['edit']; ?>
+                                    </a>
+                                    <form method="POST" onsubmit="return confirm('<?php echo $trans['confirm_delete_tip']; ?>');">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
                                         <input type="hidden" name="tip_id" value="<?php echo h($tip['tip_id']); ?>">
-                                        <button type="submit" class="btn btn-edit">
-                                            <i class="bx bx-edit"></i> Edit
-                                        </button>
-                                    </form>
-                                    <form method="POST" action="includes/delete_tip.php" onsubmit="return confirm('Are you sure you want to delete this tip?');" style="display: inline;">
-                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                        <input type="hidden" name="tip_id" value="<?php echo h($tip['tip_id']); ?>">
-                                        <input type="hidden" name="tip_type" value="seasonal tips">
-                                        <button type="submit" class="btn btn-delete">
-                                            <i class="bx bx-trash"></i> Delete
+                                        <button type="submit" name="delete_tip" class="btn btn-delete">
+                                            <i class="bx bx-trash"></i> <?php echo $trans['delete']; ?>
                                         </button>
                                     </form>
                                 </div>
@@ -105,7 +174,7 @@ include_once 'includes/header.php';
             </div>
 
             <div class="button">
-                <a href="tips.php">Back to Tips</a>
+                <a href="tips.php?lang=<?php echo $lang; ?>"><?php echo $trans['back_to_tips']; ?></a>
             </div>
         </div>
     </div>
@@ -189,11 +258,34 @@ include_once 'includes/header.php';
         font-weight: 600;
     }
 
-    .tip-details p {
+    .tip-details > p {
         color: #3a3a3ae1;
         font-style: italic;
         font-size: 14px;
         line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .tip-content {
+        margin-bottom: 12px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        border-left: 3px solid #f97f4b;
+    }
+
+    .tip-content strong {
+        color: #f97f4b;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tip-content p {
+        color: #555;
+        font-size: 13px;
+        line-height: 1.4;
+        margin: 5px 0 0 0;
     }
 
     .tip-actions {
@@ -283,6 +375,188 @@ include_once 'includes/header.php';
         transform: translateY(-2px);
     }
 
+    /* RTL support for Arabic */
+    <?php if ($lang === 'ar'): ?>
+    body {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .tip-actions {
+        flex-direction: row-reverse;
+    }
+
+    .btn i {
+        margin-right: 0;
+        margin-left: 5px;
+    }
+
+    .tips-grid {
+        direction: rtl;
+    }
+
+    .tip-card {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .tip-details h3,
+    .tip-details p {
+        text-align: right;
+    }
+
+    .tip-content {
+        text-align: right;
+        border-left: none;
+        border-right: 3px solid #f97f4b;
+    }
+
+    /* Arabic RTL Styling - Properly Fixed */
+    body {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Tajawal', 'Arial', sans-serif;
+    }
+
+    /* Sidebar Positioning - ON THE RIGHT SIDE */
+    .sidebar {
+        left: auto;
+        right: 0;
+        transition: all 0.5s ease;
+    }
+
+    /* Main Content Area - positioned from the right */
+    .home-section {
+        position: relative;
+        left: auto;
+        right: 260px;
+        width: calc(100% - 260px);
+        transition: all 0.5s ease;
+    }
+
+    /* When Sidebar is Closed/Minimized */
+    .sidebar.close {
+        width: 78px;
+    }
+
+    .sidebar.close ~ .home-section {
+        right: 78px;
+        left: auto;
+        width: calc(100% - 78px);
+    }
+
+    /* Mobile view when sidebar is toggled */
+    @media (max-width: 1090px) {
+        .sidebar {
+            right: -260px;
+            left: auto;
+        }
+        
+        .sidebar.active {
+            right: 0;
+        }
+        
+        .home-section {
+            right: 0;
+            left: auto;
+            width: 100%;
+        }
+        
+        .sidebar.active ~ .home-section {
+            right: 260px;
+            left: auto;
+            width: calc(100% - 260px);
+        }
+        
+        .sidebar.close.active ~ .home-section {
+            right: 78px;
+            left: auto;
+            width: calc(100% - 78px);
+        }
+    }
+
+    /* Box layout adjustments */
+    .box {
+        text-align: right;
+    }
+
+    .box-topic, .number, .indicator {
+        text-align: right;
+    }
+
+    /* Icon positioning in boxes - move to left side */
+    .box i {
+        left: 15px;
+        right: auto;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .tips-section {
+            text-align: right;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sidebar {
+            right: -100%;
+            left: auto;
+        }
+        
+        .sidebar.active {
+            right: 0;
+            width: 260px;
+        }
+        
+        .sidebar.close.active {
+            width: 78px;
+        }
+        
+        .home-section {
+            right: 0;
+            left: auto;
+            width: 100%;
+        }
+        
+        .sidebar.active ~ .home-section {
+            right: 260px;
+            left: auto;
+            width: calc(100% - 260px);
+        }
+        
+        .sidebar.close.active ~ .home-section {
+            right: 78px;
+            left: auto;
+            width: calc(100% - 78px);
+        }
+    }
+
+    /* Additional RTL layout fixes */
+    .sales-boxes, .overview-boxes {
+        direction: rtl;
+    }
+
+    /* File upload specific fixes */
+    .file-upload-name, .form-text, .error-message {
+        text-align: right;
+    }
+
+    /* Dropdown menus */
+    .dropdown-menu {
+        left: auto;
+        right: 0;
+    }
+    <?php endif; ?>
+
+    /* French language adjustments */
+    <?php if ($lang === 'fr'): ?>
+    .tip-details h3,
+    .tip-details p,
+    .tip-content p {
+        line-height: 1.4;
+    }
+    <?php endif; ?>
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .tips-grid {
@@ -319,6 +593,18 @@ include_once 'includes/header.php';
             padding: 0 12px 12px;
         }
     }
+.home-section {
+    position: relative;
+    width: calc(100% - 240px);
+    left: 240px;
+    min-height: 100vh;
+    transition: all 0.5s ease;
+}
+
+[dir="rtl"] .home-section {
+    left: 0;
+    right: 240px;
+}
 </style>
 
 <?php include_once 'includes/footer.php'; ?>

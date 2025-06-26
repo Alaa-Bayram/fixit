@@ -23,7 +23,7 @@ function buildLangUrl($page, $lang) {
 $currentLang = $_SESSION['lang'] ?? 'en';
 ?>
 
-<div class="sidebar">
+<div class="sidebar" dir="<?php echo $currentLang == 'ar' ? 'rtl' : 'ltr'; ?>">
     <div class="logo-details">
         <img src="assets/images/logo1.png" class="logo" alt="FixIt Logo">
     </div>

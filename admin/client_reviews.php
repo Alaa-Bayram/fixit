@@ -778,6 +778,18 @@ include_once 'includes/header.php';
             margin-left: 0;
         }
     }
+.home-section {
+    position: relative;
+    width: calc(100% - 240px);
+    left: 240px;
+    min-height: 100vh;
+    transition: all 0.5s ease;
+}
+
+[dir="rtl"] .home-section {
+    left: 0;
+    right: 240px;
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script>

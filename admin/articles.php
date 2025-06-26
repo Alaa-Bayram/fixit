@@ -583,6 +583,18 @@ body {
             height: auto;
         }
     }
+.home-section {
+    position: relative;
+    width: calc(100% - 240px);
+    left: 240px;
+    min-height: 100vh;
+    transition: all 0.5s ease;
+}
+
+[dir="rtl"] .home-section {
+    left: 0;
+    right: 240px;
+}
 </style>
 
 <script>

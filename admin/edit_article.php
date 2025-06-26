@@ -31,6 +31,11 @@ try {
     redirect('all_articles.php?lang=' . $lang, $trans['database_error']);
 }
 
+// Function to safely display form values
+function safe_form_value($value) {
+    return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
+}
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verify CSRF token
@@ -46,29 +51,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
     
-    // Sanitize input for all languages
-    $title = sanitize_input($_POST['title'] ?? '');
-    $description = sanitize_input($_POST['desc'] ?? '');
-    $sec_title = sanitize_input($_POST['sec_title'] ?? '');
-    $content1 = sanitize_input($_POST['content1'] ?? '');
-    $tert_title = sanitize_input($_POST['tert_title'] ?? '');
-    $content2 = sanitize_input($_POST['content2'] ?? '');
+    // Get input values without excessive sanitization - let the database handle it properly
+    $title = trim($_POST['title'] ?? '');
+    $description = trim($_POST['desc'] ?? '');
+    $sec_title = trim($_POST['sec_title'] ?? '');
+    $content1 = trim($_POST['content1'] ?? '');
+    $tert_title = trim($_POST['tert_title'] ?? '');
+    $content2 = trim($_POST['content2'] ?? '');
     
     // French fields
-    $title_fr = sanitize_input($_POST['title_fr'] ?? '');
-    $description_fr = sanitize_input($_POST['desc_fr'] ?? '');
-    $sec_title_fr = sanitize_input($_POST['sec_title_fr'] ?? '');
-    $content1_fr = sanitize_input($_POST['content1_fr'] ?? '');
-    $tert_title_fr = sanitize_input($_POST['tert_title_fr'] ?? '');
-    $content2_fr = sanitize_input($_POST['content2_fr'] ?? '');
+    $title_fr = trim($_POST['title_fr'] ?? '');
+    $description_fr = trim($_POST['desc_fr'] ?? '');
+    $sec_title_fr = trim($_POST['sec_title_fr'] ?? '');
+    $content1_fr = trim($_POST['content1_fr'] ?? '');
+    $tert_title_fr = trim($_POST['tert_title_fr'] ?? '');
+    $content2_fr = trim($_POST['content2_fr'] ?? '');
     
     // Arabic fields
-    $title_ar = sanitize_input($_POST['title_ar'] ?? '');
-    $description_ar = sanitize_input($_POST['desc_ar'] ?? '');
-    $sec_title_ar = sanitize_input($_POST['sec_title_ar'] ?? '');
-    $content1_ar = sanitize_input($_POST['content1_ar'] ?? '');
-    $tert_title_ar = sanitize_input($_POST['tert_title_ar'] ?? '');
-    $content2_ar = sanitize_input($_POST['content2_ar'] ?? '');
+    $title_ar = trim($_POST['title_ar'] ?? '');
+    $description_ar = trim($_POST['desc_ar'] ?? '');
+    $sec_title_ar = trim($_POST['sec_title_ar'] ?? '');
+    $content1_ar = trim($_POST['content1_ar'] ?? '');
+    $tert_title_ar = trim($_POST['tert_title_ar'] ?? '');
+    $content2_ar = trim($_POST['content2_ar'] ?? '');
     
     // Validate input - at least English fields are required
     if (empty($title) || empty($description) || empty($sec_title) || empty($content1)) {
@@ -220,36 +225,36 @@ include_once 'includes/header.php';
                     <div class="language-content active" id="lang-en">
                         <div class="field">
                             <label for="title"><?php echo $trans['title']; ?> (English) *</label>
-                            <input type="text" id="title" name="title" value="<?php echo htmlspecialchars_decode(h($article['title'], ENT_QUOTES)); ?>" required maxlength="100" placeholder="<?php echo $trans['enter_article_title']; ?>">
+                            <input type="text" id="title" name="title" value="<?php echo safe_form_value($article['title']); ?>" required maxlength="100" placeholder="<?php echo $trans['enter_article_title']; ?>">
                             <div class="error-message" id="title_error"></div>
                         </div>
                         
                         <div class="field">
                             <label for="desc"><?php echo $trans['description']; ?> (English) *</label>
-                            <textarea id="desc" name="desc" required maxlength="500" rows="3" placeholder="<?php echo $trans['enter_article_description']; ?>"><?php echo htmlspecialchars_decode(h($article['description'], ENT_QUOTES)); ?></textarea>
+                            <textarea id="desc" name="desc" required maxlength="500" rows="3" placeholder="<?php echo $trans['enter_article_description']; ?>"><?php echo safe_form_value($article['description']); ?></textarea>
                             <div class="error-message" id="desc_error"></div>
                         </div>
                         
                         <div class="field">
                             <label for="sec_title"><?php echo $trans['secondary_title']; ?> (English) *</label>
-                            <input type="text" id="sec_title" name="sec_title" value="<?php echo htmlspecialchars_decode(h($article['sec_title'], ENT_QUOTES)); ?>" required maxlength="100" placeholder="<?php echo $trans['enter_secondary_title']; ?>">
+                            <input type="text" id="sec_title" name="sec_title" value="<?php echo safe_form_value($article['sec_title']); ?>" required maxlength="100" placeholder="<?php echo $trans['enter_secondary_title']; ?>">
                             <div class="error-message" id="sec_title_error"></div>
                         </div>
                         
                         <div class="field">
                             <label for="content1"><?php echo $trans['content']; ?> (English) *</label>
-                            <textarea id="content1" name="content1" required maxlength="1000" rows="4" placeholder="<?php echo $trans['enter_main_content']; ?>"><?php echo htmlspecialchars_decode(h($article['content1'], ENT_QUOTES)); ?></textarea>
+                            <textarea id="content1" name="content1" required maxlength="1000" rows="4" placeholder="<?php echo $trans['enter_main_content']; ?>"><?php echo safe_form_value($article['content1']); ?></textarea>
                             <div class="error-message" id="content1_error"></div>
                         </div>
                         
                         <div class="field">
                             <label for="tert_title"><?php echo $trans['tertiary_title']; ?> (English)</label>
-                            <input type="text" id="tert_title" name="tert_title" value="<?php echo htmlspecialchars_decode(h($article['tert_title'], ENT_QUOTES)); ?>" maxlength="100" placeholder="<?php echo $trans['enter_tertiary_title']; ?>">
+                            <input type="text" id="tert_title" name="tert_title" value="<?php echo safe_form_value($article['tert_title']); ?>" maxlength="100" placeholder="<?php echo $trans['enter_tertiary_title']; ?>">
                         </div>
                         
                         <div class="field">
                             <label for="content2"><?php echo $trans['content']; ?> (English)</label>
-                            <textarea id="content2" name="content2" maxlength="1000" rows="4" placeholder="<?php echo $trans['enter_additional_content']; ?>"><?php echo htmlspecialchars_decode(h($article['content2'], ENT_QUOTES)); ?></textarea>
+                            <textarea id="content2" name="content2" maxlength="1000" rows="4" placeholder="<?php echo $trans['enter_additional_content']; ?>"><?php echo safe_form_value($article['content2']); ?></textarea>
                         </div>
                     </div>
                     
@@ -257,32 +262,32 @@ include_once 'includes/header.php';
                     <div class="language-content" id="lang-fr">
                         <div class="field">
                             <label for="title_fr"><?php echo $trans['title']; ?> (Français)</label>
-                            <input type="text" id="title_fr" name="title_fr" value="<?php echo htmlspecialchars_decode(h($article['title_fr'] ?? '', ENT_QUOTES)); ?>" maxlength="100" placeholder="Entrez le titre de l'article">
+                            <input type="text" id="title_fr" name="title_fr" value="<?php echo safe_form_value($article['title_fr']); ?>" maxlength="100" placeholder="Entrez le titre de l'article">
                         </div>
                         
                         <div class="field">
                             <label for="desc_fr"><?php echo $trans['description']; ?> (Français)</label>
-                            <textarea id="desc_fr" name="desc_fr" maxlength="500" rows="3" placeholder="Entrez la description de l'article"><?php echo htmlspecialchars_decode(h($article['description_fr'] ?? '', ENT_QUOTES)); ?></textarea>
+                            <textarea id="desc_fr" name="desc_fr" maxlength="500" rows="3" placeholder="Entrez la description de l'article"><?php echo safe_form_value($article['description_fr']); ?></textarea>
                         </div>
                         
                         <div class="field">
                             <label for="sec_title_fr"><?php echo $trans['secondary_title']; ?> (Français)</label>
-                            <input type="text" id="sec_title_fr" name="sec_title_fr" value="<?php echo htmlspecialchars_decode(h($article['sec_title_fr'] ?? '', ENT_QUOTES)); ?>" maxlength="100" placeholder="Entrez le titre secondaire">
+                            <input type="text" id="sec_title_fr" name="sec_title_fr" value="<?php echo safe_form_value($article['sec_title_fr']); ?>" maxlength="100" placeholder="Entrez le titre secondaire">
                         </div>
                         
                         <div class="field">
                             <label for="content1_fr"><?php echo $trans['content']; ?> (Français)</label>
-                            <textarea id="content1_fr" name="content1_fr" maxlength="1000" rows="4" placeholder="Entrez le contenu principal"><?php echo htmlspecialchars_decode(h($article['content1_fr'] ?? '', ENT_QUOTES)); ?></textarea>
+                            <textarea id="content1_fr" name="content1_fr" maxlength="1000" rows="4" placeholder="Entrez le contenu principal"><?php echo safe_form_value($article['content1_fr']); ?></textarea>
                         </div>
                         
                         <div class="field">
                             <label for="tert_title_fr"><?php echo $trans['tertiary_title']; ?> (Français)</label>
-                            <input type="text" id="tert_title_fr" name="tert_title_fr" value="<?php echo htmlspecialchars_decode(h($article['tert_title_fr'] ?? '', ENT_QUOTES)); ?>" maxlength="100" placeholder="Entrez le titre tertiaire">
+                            <input type="text" id="tert_title_fr" name="tert_title_fr" value="<?php echo safe_form_value($article['tert_title_fr']); ?>" maxlength="100" placeholder="Entrez le titre tertiaire">
                         </div>
                         
                         <div class="field">
                             <label for="content2_fr"><?php echo $trans['content']; ?> (Français)</label>
-                            <textarea id="content2_fr" name="content2_fr" maxlength="1000" rows="4" placeholder="Entrez le contenu supplémentaire"><?php echo htmlspecialchars_decode(h($article['content2_fr'] ?? '', ENT_QUOTES)); ?></textarea>
+                            <textarea id="content2_fr" name="content2_fr" maxlength="1000" rows="4" placeholder="Entrez le contenu supplémentaire"><?php echo safe_form_value($article['content2_fr']); ?></textarea>
                         </div>
                     </div>
                     
@@ -290,32 +295,32 @@ include_once 'includes/header.php';
                     <div class="language-content" id="lang-ar">
                         <div class="field">
                             <label for="title_ar"><?php echo $trans['title']; ?> (العربية)</label>
-                            <input type="text" id="title_ar" name="title_ar" value="<?php echo htmlspecialchars_decode(h($article['title_ar'] ?? '', ENT_QUOTES)); ?>" maxlength="100" placeholder="أدخل عنوان المقال" dir="rtl">
+                            <input type="text" id="title_ar" name="title_ar" value="<?php echo safe_form_value($article['title_ar']); ?>" maxlength="100" placeholder="أدخل عنوان المقال" dir="rtl">
                         </div>
                         
                         <div class="field">
                             <label for="desc_ar"><?php echo $trans['description']; ?> (العربية)</label>
-                            <textarea id="desc_ar" name="desc_ar" maxlength="500" rows="3" placeholder="أدخل وصف المقال" dir="rtl"><?php echo htmlspecialchars_decode(h($article['description_ar'] ?? '', ENT_QUOTES)); ?></textarea>
+                            <textarea id="desc_ar" name="desc_ar" maxlength="500" rows="3" placeholder="أدخل وصف المقال" dir="rtl"><?php echo safe_form_value($article['description_ar']); ?></textarea>
                         </div>
                         
                         <div class="field">
                             <label for="sec_title_ar"><?php echo $trans['secondary_title']; ?> (العربية)</label>
-                            <input type="text" id="sec_title_ar" name="sec_title_ar" value="<?php echo htmlspecialchars_decode(h($article['sec_title_ar'] ?? '', ENT_QUOTES)); ?>" maxlength="100" placeholder="أدخل العنوان الثانوي" dir="rtl">
+                            <input type="text" id="sec_title_ar" name="sec_title_ar" value="<?php echo safe_form_value($article['sec_title_ar']); ?>" maxlength="100" placeholder="أدخل العنوان الثانوي" dir="rtl">
                         </div>
                         
                         <div class="field">
                             <label for="content1_ar"><?php echo $trans['content']; ?> (العربية)</label>
-                            <textarea id="content1_ar" name="content1_ar" maxlength="1000" rows="4" placeholder="أدخل المحتوى الرئيسي" dir="rtl"><?php echo htmlspecialchars_decode(h($article['content1_ar'] ?? '', ENT_QUOTES)); ?></textarea>
+                            <textarea id="content1_ar" name="content1_ar" maxlength="1000" rows="4" placeholder="أدخل المحتوى الرئيسي" dir="rtl"><?php echo safe_form_value($article['content1_ar']); ?></textarea>
                         </div>
                         
                         <div class="field">
                             <label for="tert_title_ar"><?php echo $trans['tertiary_title']; ?> (العربية)</label>
-                            <input type="text" id="tert_title_ar" name="tert_title_ar" value="<?php echo htmlspecialchars_decode(h($article['tert_title_ar'] ?? '', ENT_QUOTES)); ?>" maxlength="100" placeholder="أدخل العنوان الثالثي" dir="rtl">
+                            <input type="text" id="tert_title_ar" name="tert_title_ar" value="<?php echo safe_form_value($article['tert_title_ar']); ?>" maxlength="100" placeholder="أدخل العنوان الثالثي" dir="rtl">
                         </div>
                         
                         <div class="field">
                             <label for="content2_ar"><?php echo $trans['content']; ?> (العربية)</label>
-                            <textarea id="content2_ar" name="content2_ar" maxlength="1000" rows="4" placeholder="أدخل المحتوى الإضافي" dir="rtl"><?php echo htmlspecialchars_decode(h($article['content2_ar'] ?? '', ENT_QUOTES)); ?></textarea>
+                            <textarea id="content2_ar" name="content2_ar" maxlength="1000" rows="4" placeholder="أدخل المحتوى الإضافي" dir="rtl"><?php echo safe_form_value($article['content2_ar']); ?></textarea>
                         </div>
                     </div>
                     
@@ -324,8 +329,8 @@ include_once 'includes/header.php';
                         <label for="image"><?php echo !empty($article['images']) ? $trans['replace_image_optional'] : $trans['upload_image']; ?></label>
                         <?php if (!empty($article['images'])): ?>
                             <div class="current-image">
-                                <img src="../public/images/<?php echo htmlspecialchars_decode(h($article['images'], ENT_QUOTES)); ?>" alt="<?php echo $trans['current_image']; ?>" class="article-thumbnail" onerror="this.style.display='none'">
-                                <p><?php echo $trans['current_image']; ?>: <?php echo htmlspecialchars_decode(h($article['images'], ENT_QUOTES)); ?></p>
+                                <img src="../public/images/<?php echo safe_form_value($article['images']); ?>" alt="<?php echo $trans['current_image']; ?>" class="article-thumbnail" onerror="this.style.display='none'">
+                                <p><?php echo $trans['current_image']; ?>: <?php echo safe_form_value($article['images']); ?></p>
                             </div>
                         <?php endif; ?>
                         <div class="file-upload-wrapper">

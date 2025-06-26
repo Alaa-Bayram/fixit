@@ -2,25 +2,32 @@
 require_once 'includes/config.php';
 require_once 'includes/functions.php';
 
+// Include language file
+require_once 'lang.php';
+
+// Get language from URL or session
+$lang = isset($_GET['lang']) ? sanitize_input($_GET['lang']) : (isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en');
+$_SESSION['lang'] = $lang;
+
 // Redirect if not logged in
 if (!is_admin_logged_in()) {
-    redirect('login.php', 'Please log in to access your profile');
+    redirect('login.php', $trans['please_login']);
 }
 
 // Get admin details
 $admin = get_admin_details($pdo);
 
 if (!$admin) {
-    set_flash_message('error', 'Unable to load profile information.');
-    redirect('index.php');
+    set_flash_message('error', $trans['unable_to_load_profile_information']);
+    redirect('index.php?lang='.$lang);
 }
 
 // Handle profile image upload
 if (isset($_POST['upload_image'])) {
     // Validate CSRF token
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        set_flash_message('error', 'Invalid form submission. Please try again.');
-        redirect('profile.php');
+        set_flash_message('error', $trans['invalid_form_submission_try_again']);
+        redirect('profile.php?lang='.$lang);
     }
 
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
@@ -52,21 +59,21 @@ if (isset($_POST['upload_image'])) {
         $validExt = in_array($fileExt, array_values($allowedTypes));
         
         if (!$validMime || !$validExt) {
-            set_flash_message('error', 'Please upload a valid image file (JPEG, PNG, GIF, WebP, SVG, ICO, BMP, or TIFF).');
-            redirect('profile.php');
+            set_flash_message('error', $trans['please_upload_valid_image']);
+            redirect('profile.php?lang='.$lang);
         }
 
         // Validate file size
         if ($fileSize > $maxSize) {
-            set_flash_message('error', 'Image file is too large. Maximum size is 10MB.');
-            redirect('profile.php');
+            set_flash_message('error', $trans['image_file_too_large']);
+            redirect('profile.php?lang='.$lang);
         }
 
         // Additional security check - verify the image is actually an image
         $imageInfo = @getimagesize($tmpName);
         if (!$imageInfo) {
-            set_flash_message('error', 'The uploaded file is not a valid image.');
-            redirect('profile.php');
+            set_flash_message('error', $trans['uploaded_file_not_valid_image']);
+            redirect('profile.php?lang='.$lang);
         }
 
         // Generate unique filename using the correct extension from MIME type
@@ -97,44 +104,44 @@ if (isset($_POST['upload_image'])) {
                 $stmt->bindParam(':user_id', $admin['user_id']);
 
                 if ($stmt->execute()) {
-                    set_flash_message('success', 'Profile image updated successfully.');
+                    set_flash_message('success', $trans['profile_image_updated_successfully']);
                     // Refresh admin data
                     $admin = get_admin_details($pdo);
                 } else {
-                    set_flash_message('error', 'Failed to update profile image in database.');
+                    set_flash_message('error', $trans['failed_to_update_profile_image']);
                 }
             } catch (PDOException $e) {
                 error_log('Image Update Error: ' . $e->getMessage());
-                set_flash_message('error', 'A system error occurred while updating the image.');
+                set_flash_message('error', $trans['system_error_updating_image']);
             }
         } else {
-            set_flash_message('error', 'Failed to upload image file.');
+            set_flash_message('error', $trans['failed_to_upload_image']);
         }
     } else {
         $uploadError = $_FILES['profile_image']['error'] ?? 0;
         $errorMessages = [
-            UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
-            UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
-            UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
-            UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
-            UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
-            UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
-            UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.',
+            UPLOAD_ERR_INI_SIZE => $trans['upload_err_ini_size'],
+            UPLOAD_ERR_FORM_SIZE => $trans['upload_err_form_size'],
+            UPLOAD_ERR_PARTIAL => $trans['upload_err_partial'],
+            UPLOAD_ERR_NO_FILE => $trans['upload_err_no_file'],
+            UPLOAD_ERR_NO_TMP_DIR => $trans['upload_err_no_tmp_dir'],
+            UPLOAD_ERR_CANT_WRITE => $trans['upload_err_cant_write'],
+            UPLOAD_ERR_EXTENSION => $trans['upload_err_extension'],
         ];
         
-        $errorMessage = $errorMessages[$uploadError] ?? 'Please select an image file to upload.';
+        $errorMessage = $errorMessages[$uploadError] ?? $trans['please_select_image_to_upload'];
         set_flash_message('error', $errorMessage);
     }
 
-    redirect('profile.php');
+    redirect('profile.php?lang='.$lang);
 }
 
 // Handle profile update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_image'])) {
     // Validate CSRF token
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        set_flash_message('error', 'Invalid form submission. Please try again.');
-        redirect('profile.php');
+        set_flash_message('error', $trans['invalid_form_submission_try_again']);
+        redirect('profile.php?lang='.$lang);
     }
 
     // Check if this is a password change request
@@ -148,25 +155,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_image'])) {
 
         // Validate required fields for password change
         if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
-            set_flash_message('error', 'Please fill in all password fields.');
-            redirect('profile.php');
+            set_flash_message('error', $trans['please_fill_password_fields']);
+            redirect('profile.php?lang='.$lang);
         }
 
         // Validate current password
         if (!password_verify($current_password, $admin['password'])) {
-            set_flash_message('error', 'Current password is incorrect.');
-            redirect('profile.php');
+            set_flash_message('error', $trans['current_password_incorrect']);
+            redirect('profile.php?lang='.$lang);
         }
 
         // Validate new password
         if (strlen($new_password) < 8) {
-            set_flash_message('error', 'New password must be at least 8 characters long.');
-            redirect('profile.php');
+            set_flash_message('error', $trans['new_password_min_8_chars']);
+            redirect('profile.php?lang='.$lang);
         }
 
         if ($new_password !== $confirm_password) {
-            set_flash_message('error', 'New passwords do not match.');
-            redirect('profile.php');
+            set_flash_message('error', $trans['new_passwords_do_not_match']);
+            redirect('profile.php?lang='.$lang);
         }
 
         try {
@@ -177,13 +184,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_image'])) {
             $stmt->bindParam(':user_id', $admin['user_id']);
 
             if ($stmt->execute()) {
-                set_flash_message('success', 'Password updated successfully.');
+                set_flash_message('success', $trans['password_updated_successfully']);
             } else {
-                set_flash_message('error', 'Failed to update password.');
+                set_flash_message('error', $trans['failed_to_update_password']);
             }
         } catch (PDOException $e) {
             error_log('Password Update Error: ' . $e->getMessage());
-            set_flash_message('error', 'A system error occurred. Please try again later.');
+            set_flash_message('error', $trans['system_error_try_again']);
         }
     } else {
         // Handle profile information update
@@ -194,14 +201,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_image'])) {
 
         // Validate required fields for profile update
         if (empty($fname) || empty($lname) || empty($email)) {
-            set_flash_message('error', 'Please fill in all required fields.');
-            redirect('profile.php');
+            set_flash_message('error', $trans['please_fill_required_fields']);
+            redirect('profile.php?lang='.$lang);
         }
 
         // Validate email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            set_flash_message('error', 'Please provide a valid email address.');
-            redirect('profile.php');
+            set_flash_message('error', $trans['please_provide_valid_email']);
+            redirect('profile.php?lang='.$lang);
         }
 
         try {
@@ -217,22 +224,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_image'])) {
 
             if ($stmt->execute()) {
                 $pdo->commit();
-                set_flash_message('success', 'Profile updated successfully.');
+                set_flash_message('success', $trans['profile_updated_successfully']);
 
                 // Refresh admin data
                 $admin = get_admin_details($pdo);
             } else {
                 $pdo->rollback();
-                set_flash_message('error', 'Failed to update profile.');
+                set_flash_message('error', $trans['failed_to_update_profile']);
             }
         } catch (PDOException $e) {
             $pdo->rollback();
             error_log('Profile Update Error: ' . $e->getMessage());
-            set_flash_message('error', 'A system error occurred. Please try again later.');
+            set_flash_message('error', $trans['system_error_try_again']);
         }
     }
 
-    redirect('profile.php');
+    redirect('profile.php?lang='.$lang);
 }
 
 // Generate new CSRF token if not exists
@@ -243,18 +250,18 @@ if (empty($_SESSION['csrf_token'])) {
 include_once "includes/header.php";
 ?>
 
-<div class="home-content">
+<div class="home-content" dir="<?php echo $lang == 'ar' ? 'rtl' : 'ltr'; ?>">
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-avatar">
-                <img src="../public/images/<?php echo h($admin['img'] ?? 'default-profile.jpg'); ?>" alt="Profile Picture" id="profileImage">
+                <img src="../public/images/<?php echo h($admin['img'] ?? 'default-profile.jpg'); ?>" alt="<?php echo h($trans['profile']); ?>" id="profileImage">
                 <div class="avatar-overlay" onclick="document.getElementById('imageUpload').click()">
                     <i class="bx bx-camera"></i>
                 </div>
             </div>
             <div class="profile-info">
                 <h1><?php echo h($admin['fname'] . ' ' . $admin['lname']); ?></h1>
-                <p class="profile-role">System Administrator</p>
+                <p class="profile-role"><?php echo h($trans['system_administrator']); ?></p>
                 <p class="profile-status">
                     <i class="bx bx-circle" style="color: #4CAF50;"></i>
                     <?php echo h($admin['status'] ?? 'Active'); ?>
@@ -265,6 +272,7 @@ include_once "includes/header.php";
         <!-- Hidden file input for image upload -->
         <form method="POST" enctype="multipart/form-data" id="imageUploadForm" style="display: none;">
             <input type="hidden" name="csrf_token" value="<?php echo h($_SESSION['csrf_token']); ?>">
+            <input type="hidden" name="lang" value="<?php echo h($lang); ?>">
             <input type="file" id="imageUpload" name="profile_image" accept="image/*" onchange="uploadImage()">
             <input type="hidden" name="upload_image" value="1">
         </form>
@@ -287,15 +295,15 @@ include_once "includes/header.php";
             <div class="tab-buttons">
                 <button class="tab-btn active" data-tab="personal">
                     <i class="bx bx-user"></i>
-                    Personal Information
+                    <?php echo h($trans['personal_information']); ?>
                 </button>
                 <button class="tab-btn" data-tab="security">
                     <i class="bx bx-shield"></i>
-                    Security Settings
+                    <?php echo h($trans['security_settings']); ?>
                 </button>
                 <button class="tab-btn" data-tab="activity">
                     <i class="bx bx-time"></i>
-                    Activity Log
+                    <?php echo h($trans['activity_log']); ?>
                 </button>
             </div>
 
@@ -304,43 +312,43 @@ include_once "includes/header.php";
                 <div class="tab-pane active" id="personal">
                     <div class="profile-card">
                         <div class="card-header">
-                            <h3><i class="bx bx-user"></i> Personal Information</h3>
-                            <p>Update your personal details and contact information</p>
+                            <h3><i class="bx bx-user"></i> <?php echo h($trans['personal_information']); ?></h3>
+                            <p><?php echo h($trans['update_personal_details']); ?></p>
                         </div>
                         <form method="POST" class="profile-form">
                             <input type="hidden" name="csrf_token" value="<?php echo h($_SESSION['csrf_token']); ?>">
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="fname">First Name *</label>
+                                    <label for="fname"><?php echo h($trans['first_name']); ?> *</label>
                                     <input type="text" id="fname" name="fname" value="<?php echo h($admin['fname']); ?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="lname">Last Name *</label>
+                                    <label for="lname"><?php echo h($trans['last_name']); ?> *</label>
                                     <input type="text" id="lname" name="lname" value="<?php echo h($admin['lname']); ?>" required>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="email">Email Address *</label>
+                                    <label for="email"><?php echo h($trans['email_address']); ?> *</label>
                                     <input type="email" id="email" name="email" value="<?php echo h($admin['email']); ?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="phone">Phone Number</label>
+                                    <label for="phone"><?php echo h($trans['phone_number']); ?></label>
                                     <input type="tel" id="phone" name="phone" value="<?php echo h($admin['phone'] ?? ''); ?>">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="created_at">Member Since</label>
+                                <label for="created_at"><?php echo h($trans['member_since']); ?></label>
                                 <input type="text" value="<?php echo date('F j, Y', strtotime($admin['created_at'] ?? 'now')); ?>" readonly>
                             </div>
 
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bx bx-save"></i>
-                                    Update Information
+                                    <?php echo h($trans['update_information']); ?>
                                 </button>
                             </div>
                         </form>
@@ -351,14 +359,14 @@ include_once "includes/header.php";
                 <div class="tab-pane" id="security">
                     <div class="profile-card">
                         <div class="card-header">
-                            <h3><i class="bx bx-shield"></i> Change Password</h3>
-                            <p>Keep your account secure with a strong password</p>
+                            <h3><i class="bx bx-shield"></i> <?php echo h($trans['change_password']); ?></h3>
+                            <p><?php echo h($trans['keep_account_secure']); ?></p>
                         </div>
                         <form method="POST" class="profile-form" id="passwordForm">
                             <input type="hidden" name="csrf_token" value="<?php echo h($_SESSION['csrf_token']); ?>">
 
                             <div class="form-group">
-                                <label for="current_password">Current Password *</label>
+                                <label for="current_password"><?php echo h($trans['current_password']); ?> *</label>
                                 <div class="password-input">
                                     <input type="password" id="current_password" name="current_password" required>
                                     <button type="button" class="password-toggle" data-target="current_password">
@@ -368,7 +376,7 @@ include_once "includes/header.php";
                             </div>
 
                             <div class="form-group">
-                                <label for="new_password">New Password *</label>
+                                <label for="new_password"><?php echo h($trans['new_password']); ?> *</label>
                                 <div class="password-input">
                                     <input type="password" id="new_password" name="new_password" minlength="8" required>
                                     <button type="button" class="password-toggle" data-target="new_password">
@@ -376,11 +384,11 @@ include_once "includes/header.php";
                                     </button>
                                 </div>
                                 <div class="password-strength" id="passwordStrength"></div>
-                                <small class="password-hint">Use at least 8 characters with a mix of letters, numbers & symbols</small>
+                                <small class="password-hint"><?php echo h($trans['password_hint']); ?></small>
                             </div>
 
                             <div class="form-group">
-                                <label for="confirm_password">Confirm New Password *</label>
+                                <label for="confirm_password"><?php echo h($trans['confirm_new_password']); ?> *</label>
                                 <div class="password-input">
                                     <input type="password" id="confirm_password" name="confirm_password" required>
                                     <button type="button" class="password-toggle" data-target="confirm_password">
@@ -392,7 +400,7 @@ include_once "includes/header.php";
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bx bx-key"></i>
-                                    Change Password
+                                    <?php echo h($trans['change_password']); ?>
                                 </button>
                             </div>
                         </form>
@@ -403,8 +411,8 @@ include_once "includes/header.php";
                 <div class="tab-pane" id="activity">
                     <div class="profile-card">
                         <div class="card-header">
-                            <h3><i class="bx bx-time"></i> Recent Activity</h3>
-                            <p>Your recent account activity and login history</p>
+                            <h3><i class="bx bx-time"></i> <?php echo h($trans['recent_activity']); ?></h3>
+                            <p><?php echo h($trans['account_activity_login_history']); ?></p>
                         </div>
                         <div class="activity-list">
                             <div class="activity-item">
@@ -412,8 +420,8 @@ include_once "includes/header.php";
                                     <i class="bx bx-log-in"></i>
                                 </div>
                                 <div class="activity-details">
-                                    <h4>Successful Login</h4>
-                                    <p>Logged in from <?php echo h($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown device'); ?></p>
+                                    <h4><?php echo h($trans['successful_login']); ?></h4>
+                                    <p><?php echo h($trans['logged_in_from']); ?> <?php echo h($_SERVER['HTTP_USER_AGENT'] ?? $trans['unknown_device']); ?></p>
                                     <span class="activity-time">
                                         <?php
                                         date_default_timezone_set('Asia/Beirut');
@@ -428,9 +436,9 @@ include_once "includes/header.php";
                                     <i class="bx bx-edit"></i>
                                 </div>
                                 <div class="activity-details">
-                                    <h4>Profile Updated</h4>
-                                    <p>Personal information was modified</p>
-                                    <span class="activity-time">Last updated</span>
+                                    <h4><?php echo h($trans['profile_updated']); ?></h4>
+                                    <p><?php echo h($trans['personal_information_modified']); ?></p>
+                                    <span class="activity-time"><?php echo h($trans['last_updated']); ?></span>
                                 </div>
                             </div>
 
@@ -439,9 +447,9 @@ include_once "includes/header.php";
                                     <i class="bx bx-shield"></i>
                                 </div>
                                 <div class="activity-details">
-                                    <h4>Security Check</h4>
-                                    <p>Password strength validation passed</p>
-                                    <span class="activity-time">System check</span>
+                                    <h4><?php echo h($trans['security_check']); ?></h4>
+                                    <p><?php echo h($trans['password_strength_validation_passed']); ?></p>
+                                    <span class="activity-time"><?php echo h($trans['system_check']); ?></span>
                                 </div>
                             </div>
                         </div>
@@ -575,6 +583,7 @@ include_once "includes/header.php";
         font-size: 1rem;
         color: #6c757d;
         transition: all 0.3s ease;
+       
     }
 
     .tab-btn:hover {
@@ -737,11 +746,13 @@ include_once "includes/header.php";
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
+        justify-content: center;
     }
 
     .btn-primary {
         background: #ff6c40e4;
         color: white;
+        justify-content: center;
     }
 
     .btn-primary:hover {
@@ -826,6 +837,19 @@ include_once "includes/header.php";
             font-size: 2rem;
         }
     }
+    .home-section {
+    position: relative;
+    width: calc(100% - 240px);
+    left: 240px;
+    min-height: 100vh;
+    transition: all 0.5s ease;
+}
+
+[dir="rtl"] .home-section {
+    left: 0;
+    right: 240px;
+}
+
 </style>
 
 <script>
@@ -884,7 +908,7 @@ include_once "includes/header.php";
         if (newPasswordInput && confirmPasswordInput) {
             confirmPasswordInput.addEventListener('input', () => {
                 if (newPasswordInput.value !== confirmPasswordInput.value) {
-                    confirmPasswordInput.setCustomValidity('Passwords do not match');
+                    confirmPasswordInput.setCustomValidity('<?php echo $trans['passwords_do_not_match']; ?>');
                 } else {
                     confirmPasswordInput.setCustomValidity('');
                 }

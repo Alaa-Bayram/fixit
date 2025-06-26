@@ -7,6 +7,9 @@ if (!is_admin_logged_in()) {
     redirect('login.php', 'Please log in to access the dashboard');
 }
 
+// Include language file
+require_once 'lang.php';
+
 // Include tips data
 require_once 'includes/tips_data.php';
 
@@ -31,11 +34,11 @@ include_once 'includes/header.php';
     <div class="overview-boxes">
         <div class="box">
             <div class="right-side">
-                <div class="box-topic">Daily Tips</div>
+                <div class="box-topic"><?php echo $trans['daily_tips']; ?></div>
                 <div class="number"><?php echo number_format(count($daily_tips ?? [])); ?></div>
                 <div class="indicator">
                     <i class="bx bx-up-arrow-alt"></i>
-                    <span class="text">Active tips</span>
+                    <span class="text"><?php echo $trans['active_tips']; ?></span>
                 </div>
             </div>
             <i class="bx bx-bulb cart one"></i>
@@ -43,11 +46,11 @@ include_once 'includes/header.php';
 
         <div class="box">
             <div class="right-side">
-                <div class="box-topic">Seasonal Tips</div>
+                <div class="box-topic"><?php echo $trans['seasonal_tips']; ?></div>
                 <div class="number"><?php echo number_format(count($seasonal_tips ?? [])); ?></div>
                 <div class="indicator">
                     <i class="bx bx-up-arrow-alt"></i>
-                    <span class="text">Active tips</span>
+                    <span class="text"><?php echo $trans['active_tips']; ?></span>
                 </div>
             </div>
             <i class="bx bx-calendar cart two"></i>
@@ -55,11 +58,11 @@ include_once 'includes/header.php';
 
         <div class="box">
             <div class="right-side">
-                <div class="box-topic">Total Tips</div>
+                <div class="box-topic"><?php echo $trans['total_tips']; ?></div>
                 <div class="number"><?php echo number_format(count($daily_tips ?? []) + count($seasonal_tips ?? [])); ?></div>
                 <div class="indicator">
                     <i class="bx bx-up-arrow-alt"></i>
-                    <span class="text">All categories</span>
+                    <span class="text"><?php echo $trans['all_categories']; ?></span>
                 </div>
             </div>
             <i class="bx bx-book cart three"></i>
@@ -72,34 +75,35 @@ include_once 'includes/header.php';
         <div class="forms-container">
             <!-- Add Daily Tip Form -->
             <div class="recent-sales box form-box">
-                <div class="title">Add Daily Tip</div>
+                <div class="title"><?php echo $trans['add_daily_tip']; ?></div>
                 <div class="sales-details">
-                    <form id="dailyTipForm" method="POST" action="includes/add_dailyTip.php" enctype="multipart/form-data" class="tip-form">
+                    <form id="dailyTipForm" method="POST" action="includes/add_dailyTip.php?lang=<?php echo $lang; ?>" enctype="multipart/form-data" class="tip-form">
                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+                        <input type="hidden" name="language" value="<?php echo $lang; ?>">
 
                         <div class="field">
-                            <label for="daily_title">Title</label>
-                            <input type="text" id="daily_title" name="title" required maxlength="100" placeholder="Enter tip title">
+                            <label for="daily_title"><?php echo $trans['title']; ?></label>
+                            <input type="text" id="daily_title" name="title" required maxlength="100" placeholder="<?php echo $trans['enter_tip_title']; ?>">
                             <div class="error-message" id="daily_title_error"></div>
                         </div>
 
                         <div class="field">
-                            <label for="daily_desc">Description</label>
-                            <textarea id="daily_desc" name="description" required maxlength="500" rows="3" placeholder="Enter tip description"></textarea>
+                            <label for="daily_desc"><?php echo $trans['description']; ?></label>
+                            <textarea id="daily_desc" name="description" required maxlength="500" rows="3" placeholder="<?php echo $trans['enter_tip_description']; ?>"></textarea>
                             <div class="error-message" id="daily_desc_error"></div>
                         </div>
 
                         <div class="field">
-                            <label for="daily_image">Image</label>
+                            <label for="daily_image"><?php echo $trans['image']; ?></label>
                             <div class="file-upload-wrapper">
                                 <input type="file" id="daily_image" name="image" accept="image/x-png,image/gif,image/jpeg,image/jpg" required class="upload">
                                 <label for="daily_image" class="file-upload-label">
                                     <i class="bx bx-cloud-upload"></i>
-                                    <span>Choose a file</span>
+                                    <span><?php echo $trans['choose_file']; ?></span>
                                 </label>
-                                <div class="file-upload-name" id="daily_file_name">No file chosen</div>
+                                <div class="file-upload-name" id="daily_file_name"><?php echo $trans['no_file_chosen']; ?></div>
                             </div>
-                            <small class="form-text">Max size: 2MB | Formats: JPG, PNG, GIF</small>
+                            <small class="form-text"><?php echo $trans['file_requirements']; ?></small>
                             <div class="error-message" id="daily_image_error"></div>
                         </div>
 
@@ -112,7 +116,7 @@ include_once 'includes/header.php';
                         </div>
 
                         <button type="submit" class="btn btn-daily">
-                            <span class="btn-text">Add Daily Tip</span>
+                            <span class="btn-text"><?php echo $trans['add_daily_tip']; ?></span>
                             <span class="btn-loader" style="display:none;">
                                 <i class="bx bx-loader bx-spin"></i>
                             </span>
@@ -123,32 +127,33 @@ include_once 'includes/header.php';
 
             <!-- Add Seasonal Tip Form -->
             <div class="recent-sales box form-box">
-                <div class="title">Add Seasonal Tip</div>
+                <div class="title"><?php echo $trans['add_seasonal_tip']; ?></div>
                 <div class="sales-details">
-                    <form id="seasonalTipForm" method="POST" action="includes/add_seasonalTip.php" enctype="multipart/form-data" class="tip-form">
+                    <form id="seasonalTipForm" method="POST" action="includes/add_seasonalTip.php?lang=<?php echo $lang; ?>" enctype="multipart/form-data" class="tip-form">
                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+                        <input type="hidden" name="language" value="<?php echo $lang; ?>">
 
                         <div class="field">
-                            <label for="seasonal_title">Title</label>
-                            <input type="text" id="seasonal_title" name="title" required maxlength="100" placeholder="Enter seasonal tip title">
+                            <label for="seasonal_title"><?php echo $trans['title']; ?></label>
+                            <input type="text" id="seasonal_title" name="title" required maxlength="100" placeholder="<?php echo $trans['enter_seasonal_tip_title']; ?>">
                             <div class="error-message" id="seasonal_title_error"></div>
                         </div>
 
                         <div class="field">
-                            <label for="seasonal_desc">Description</label>
-                            <textarea id="seasonal_desc" name="desc" required maxlength="500" rows="3" placeholder="Enter seasonal tip description"></textarea>
+                            <label for="seasonal_desc"><?php echo $trans['description']; ?></label>
+                            <textarea id="seasonal_desc" name="desc" required maxlength="500" rows="3" placeholder="<?php echo $trans['enter_seasonal_tip_description']; ?>"></textarea>
                             <div class="error-message" id="seasonal_desc_error"></div>
                         </div>
 
                         <div class="field">
-                            <label for="tip1">First Tip</label>
-                            <input type="text" id="tip1" name="tip1" required maxlength="255" placeholder="Enter first seasonal tip">
+                            <label for="tip1"><?php echo $trans['first_tip']; ?></label>
+                            <input type="text" id="tip1" name="tip1" required maxlength="255" placeholder="<?php echo $trans['enter_first_seasonal_tip']; ?>">
                             <div class="error-message" id="tip1_error"></div>
                         </div>
 
                         <div class="field">
-                            <label for="tip2">Second Tip</label>
-                            <input type="text" id="tip2" name="tip2" required maxlength="255" placeholder="Enter second seasonal tip">
+                            <label for="tip2"><?php echo $trans['second_tip']; ?></label>
+                            <input type="text" id="tip2" name="tip2" required maxlength="255" placeholder="<?php echo $trans['enter_second_seasonal_tip']; ?>">
                             <div class="error-message" id="tip2_error"></div>
                         </div>
 
@@ -161,7 +166,7 @@ include_once 'includes/header.php';
                         </div>
 
                         <button type="submit" class="btn btn-seasonal">
-                            <span class="btn-text">Add Seasonal Tip</span>
+                            <span class="btn-text"><?php echo $trans['add_seasonal_tip']; ?></span>
                             <span class="btn-loader" style="display:none;">
                                 <i class="bx bx-loader bx-spin"></i>
                             </span>
@@ -173,13 +178,13 @@ include_once 'includes/header.php';
 
         <!-- Recent Tips Display - Full width table-like layout in separate row -->
         <div class="top-sales box recent-tips-container">
-            <div class="title">Recent Tips</div>
+            <div class="title"><?php echo $trans['recent_tips']; ?></div>
 
             <div class="tips-tabs">
-                <button class="tab-button active" data-tab="daily-tips">Daily Tips</button>
-                <button class="tab-button" data-tab="seasonal-tips">Seasonal Tips</button>
+                <button class="tab-button active" data-tab="daily-tips"><?php echo $trans['daily_tips']; ?></button>
+                <button class="tab-button" data-tab="seasonal-tips"><?php echo $trans['seasonal_tips']; ?></button>
                 <div class="search-box">
-                    <input type="text" id="tips-search" placeholder="Search tips...">
+                    <input type="text" id="tips-search" placeholder="<?php echo $trans['search_tips']; ?>">
                     <i class="bx bx-search"></i>
                 </div>
             </div>
@@ -187,10 +192,9 @@ include_once 'includes/header.php';
             <div id="daily-tips" class="tab-content active">
                 <div class="tips-table">
                     <div class="tips-table-header">
-                        <div class="header-item">Image</div>
-                        <div class="header-item">Title</div>
-                        <div class="header-item">Description</div>
-
+                        <div class="header-item"><?php echo $trans['image']; ?></div>
+                        <div class="header-item"><?php echo $trans['title']; ?></div>
+                        <div class="header-item"><?php echo $trans['description']; ?></div>
                     </div>
 
                     <div class="tips-table-body" id="daily-tips-body">
@@ -204,7 +208,7 @@ include_once 'includes/header.php';
                                                 class="tip-thumbnail"
                                                 onerror="this.style.display='none'">
                                         <?php else: ?>
-                                            <span class="no-image">No Image</span>
+                                            <span class="no-image"><?php echo $trans['no_image']; ?></span>
                                         <?php endif; ?>
                                     </div>
                                     <div class="tips-table-cell"><?php echo h($tip['title']); ?></div>
@@ -213,7 +217,7 @@ include_once 'includes/header.php';
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="tips-table-row no-tips">
-                                <div class="tips-table-cell" colspan="4">No daily tips available</div>
+                                <div class="tips-table-cell" colspan="4"><?php echo $trans['no_daily_tips']; ?></div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -223,10 +227,10 @@ include_once 'includes/header.php';
             <div id="seasonal-tips" class="tab-content">
                 <div class="tips-table">
                     <div class="tips-table-header">
-
-                        <div class="header-item">Title</div>
-                        <div class="header-item">Tip 1</div>
-                        <div class="header-item">Tip 2</div>
+                        <div class="header-item"><?php echo $trans['title']; ?></div>
+                        <div class="header-item"><?php echo $trans['description']; ?></div>
+                        <div class="header-item"><?php echo $trans['tip']; ?> 1</div>
+                        <div class="header-item"><?php echo $trans['tip']; ?> 2</div>
                         <div class="header-item"></div>
                     </div>
 
@@ -234,21 +238,21 @@ include_once 'includes/header.php';
                         <?php if (!empty($seasonal_tips)): ?>
                             <?php foreach (array_slice($seasonal_tips, 0, 5) as $tip): ?>
                                 <div class="tips-table-row">
-
                                     <div class="tips-table-cell"><?php echo h($tip['title']); ?></div>
                                     <div class="tips-table-cell">
+                                        <div class="seasonal-tip-item">• <?php echo h($tip['description']); ?></div>
+                                    </div>
+                                    <div class="tips-table-cell">
                                         <div class="seasonal-tip-item">• <?php echo h($tip['f_tip']); ?></div>
-
                                     </div>
                                     <div class="tips-table-cell">
                                         <div class="seasonal-tip-item">• <?php echo h($tip['s_tip']); ?></div>
                                     </div>
-                                    
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <div class="tips-table-row no-tips">
-                                <div class="tips-table-cell" colspan="4">No seasonal tips available</div>
+                                <div class="tips-table-cell" colspan="4"><?php echo $trans['no_seasonal_tips']; ?></div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -256,14 +260,128 @@ include_once 'includes/header.php';
             </div>
 
             <div class="button">
-                <a href="all_tips.php">See All Tips</a>
+                <a href="all_tips.php?lang=<?php echo $lang; ?>"><?php echo $trans['see_all_tips']; ?></a>
             </div>
         </div>
     </div>
 </div>
 
 <style>
+    /* Language Switcher Styles */
+    .language-switcher {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
 
+    .lang-dropdown {
+        position: relative;
+    }
+
+    .lang-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 15px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .lang-btn:hover {
+        background: #f8f9fa;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .lang-options {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        min-width: 150px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        margin-top: 5px;
+    }
+
+    .lang-options.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .lang-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        color: #333;
+        text-decoration: none;
+        transition: background 0.2s;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .lang-option:last-child {
+        border-bottom: none;
+    }
+
+    .lang-option:hover {
+        background: #f8f9fa;
+    }
+
+    .lang-option.active {
+        background: #e3f2fd;
+        color: #1976d2;
+        font-weight: 500;
+    }
+
+    .lang-option .flag {
+        font-size: 18px;
+    }
+
+    /* RTL Support for Arabic */
+    [dir="rtl"] {
+        text-align: right;
+    }
+
+    [dir="rtl"] .lang-dropdown {
+        left: 20px;
+        right: auto;
+    }
+
+    [dir="rtl"] .lang-options {
+        left: 0;
+        right: auto;
+    }
+
+    [dir="rtl"] .form-box .title,
+    [dir="rtl"] .recent-tips-container .title {
+        text-align: right;
+    }
+
+    [dir="rtl"] .tip-form label {
+        text-align: right;
+    }
+
+    [dir="rtl"] .tips-tabs {
+        flex-direction: row-reverse;
+    }
+
+    [dir="rtl"] .search-box {
+        margin-left: 0;
+        margin-right: auto;
+    }
 
     /* Main sales-boxes container */
     .sales-boxes {
@@ -633,40 +751,6 @@ include_once 'includes/header.php';
         line-height: 1.4;
     }
 
-    /* Action buttons */
-    .action-btn {
-        padding: 8px;
-        margin: 0 3px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 18px;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-    }
-
-    .edit-btn {
-        background-color: rgb(194, 237, 230);
-        color: rgb(10, 61, 53);
-    }
-
-    .edit-btn:hover {
-        background-color: rgb(143, 200, 190);
-    }
-
-    .delete-btn {
-        background-color: rgba(231, 76, 60, 0.1);
-        color: #e74c3c;
-    }
-
-    .delete-btn:hover {
-        background-color: rgba(231, 76, 60, 0.2);
-    }
-
     /* No tips message */
     .no-tips {
         justify-content: center;
@@ -721,34 +805,29 @@ include_once 'includes/header.php';
         }
     }
 
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
     /* Responsive adjustments */
-/* Enhanced Responsive CSS - Add this to your existing styles */
+    @media (max-width: 480px) {
+        .language-switcher {
+            position: relative;
+            top: auto;
+            right: auto;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
 
-/* Mobile First Approach - Base styles for mobile */
-@media (max-width: 480px) {
-    .home-content {
-        padding: 10px;
-    }
+        .home-content {
+            padding: 10px;
+        }
 
-    /* Overview boxes - Stack vertically on very small screens */
-    .overview-boxes {
-        flex-direction: column;
-        gap: 10px;
-    }
+        .overview-boxes {
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    .overview-boxes .box {
-        min-width: 100%;
-        padding: 15px;
+        .overview-boxes .box {
+            min-width: 100%;
+            padding: 15px;
     }
 
     .overview-boxes .box .number {
@@ -1059,6 +1138,18 @@ include_once 'includes/header.php';
         max-width: 50px;
         max-height: 50px;
     }
+}
+.home-section {
+    position: relative;
+    width: calc(100% - 240px);
+    left: 240px;
+    min-height: 100vh;
+    transition: all 0.5s ease;
+}
+
+[dir="rtl"] .home-section {
+    left: 0;
+    right: 240px;
 }
 </style>
 

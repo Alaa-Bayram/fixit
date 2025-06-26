@@ -172,7 +172,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <span class="admin_name"><?php echo h($admin['fname'] . ' ' . $admin['lname']); ?></span>
                     <i class="bx bx-chevron-down"></i>
                     <div class="dropdown-menu">
-                        <a href="profile.php"><i class="bx bx-user"></i><?php echo isset($trans['profile']) ? $trans['profile'] : 'Profile'; ?></a>
+                        <a href="profile.php?lang=<?php echo $lang; ?>"><i class="bx bx-user"></i><?php echo isset($trans['profile']) ? $trans['profile'] : 'Profile'; ?></a>
                         <a href="logout.php"><i class="bx bx-log-out"></i> <?php echo isset($trans['logout']) ? $trans['logout'] :'Logout'; ?></a>
                     </div>
                 </div>

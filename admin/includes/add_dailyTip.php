@@ -2,6 +2,7 @@
 session_start();
 require_once 'config.php';
 require_once 'functions.php';
+require_once 'translation/trans.php';
 
 // Check if user is logged in
 if (!is_admin_logged_in()) {
@@ -10,18 +11,21 @@ if (!is_admin_logged_in()) {
     exit();
 }
 
+// Get language parameter
+$lang = $_GET['lang'] ?? $_POST['lang'] ?? 'en';
+
 // Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verify CSRF token
     if (!isset($_POST['csrf_token'])) {
         $_SESSION['error_message'] = "CSRF token missing";
-        header('Location: ../tips.php');
+        header('Location: ../tips.php?lang=' . $lang);
         exit();
     }
     
     if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $_SESSION['error_message'] = "Invalid form submission";
-        header('Location: ../tips.php');
+        header('Location: ../tips.php?lang=' . $lang);
         exit();
     }
 
@@ -35,20 +39,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validate input
     if (empty($title) || empty($description)) {
         $_SESSION['error_message'] = "Title and description are required";
-        header('Location: ../tips.php');
+        header('Location: ../tips.php?lang=' . $lang);
         exit();
     }
 
     // Validate lengths
     if (strlen($title) < 3 || strlen($title) > 100) {
         $_SESSION['error_message'] = "Title must be between 3 and 100 characters";
-        header('Location: ../tips.php');
+        header('Location: ../tips.php?lang=' . $lang);
         exit();
     }
 
     if (strlen($description) < 10 || strlen($description) > 500) {
         $_SESSION['error_message'] = "Description must be between 10 and 500 characters";
-        header('Location: ../tips.php');
+        header('Location: ../tips.php?lang=' . $lang);
         exit();
     }
 
@@ -69,34 +73,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             default:
                 $_SESSION['error_message'] = "Image upload failed with error code: " . $upload_error;
         }
-        header('Location: ../tips.php');
+        header('Location: ../tips.php?lang=' . $lang);
         exit();
     }
 
     try {
-    // Check if user exists
-    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM users WHERE user_id = :user_id");
-    $stmt->bindParam(':user_id', $user_id);
-    $stmt->execute();
-    $user_exists = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Check if user exists
+        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM users WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $user_exists = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user_exists['count'] == 0) {
-        $_SESSION['error_message'] = "Invalid user account. Please log out and log in again.";
-        header('Location: ../tips.php');
-        exit();
-    }
+        if ($user_exists['count'] == 0) {
+            $_SESSION['error_message'] = "Invalid user account. Please log out and log in again.";
+            header('Location: ../tips.php?lang=' . $lang);
+            exit();
+        }
 
-    // Check if title already exists
-    $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM tips WHERE title = :title AND type = :type");
-    $stmt->bindParam(':title', $title);
-    $stmt->bindParam(':type', $type);
-    $stmt->execute();
-        
+        // Check if title already exists
+        $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM tips WHERE title = :title AND type = :type");
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':type', $type);
+        $stmt->execute();
+            
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($result['count'] > 0) {
             $_SESSION['error_message'] = "A daily tip with this title already exists";
-            header('Location: ../tips.php');
+            header('Location: ../tips.php?lang=' . $lang);
             exit();
         }
 
@@ -116,13 +120,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Validate file
         if (!in_array($img_type, $allowed_types) || !in_array($img_ext, $allowed_extensions)) {
             $_SESSION['error_message'] = "Only JPG, PNG, and GIF images are allowed";
-            header('Location: ../tips.php');
+            header('Location: ../tips.php?lang=' . $lang);
             exit();
         }
         
         if ($img_size > $max_size) {
             $_SESSION['error_message'] = "Image size should be less than 2MB";
-            header('Location: ../tips.php');
+            header('Location: ../tips.php?lang=' . $lang);
             exit();
         }
         
@@ -135,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!is_dir($dir)) {
             if (!mkdir($dir, 0755, true)) {
                 $_SESSION['error_message'] = "Failed to create upload directory";
-                header('Location: ../tips.php');
+                header('Location: ../tips.php?lang=' . $lang);
                 exit();
             }
         }
@@ -143,18 +147,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Move uploaded file
         if (!move_uploaded_file($tmp_name, $upload_path)) {
             $_SESSION['error_message'] = "Failed to upload image";
-            header('Location: ../tips.php');
+            header('Location: ../tips.php?lang=' . $lang);
             exit();
         }
 
+        // Generate translations
+        $title_fr = translateText($title, 'en|fr');
+        $description_fr = translateText($description, 'en|fr');
+        $title_ar = translateText($title, 'en|ar');
+        $description_ar = translateText($description, 'en|ar');
 
-error_log("Attempting to insert tip with user_id: " . $user_id);
+        error_log("Attempting to insert tip with user_id: " . $user_id);
+        
         // Start transaction
         $pdo->beginTransaction();
         
-        // Insert the new tip
-        $stmt = $pdo->prepare("INSERT INTO tips (title, description, images, date, type, user_id) 
-                              VALUES (:title, :description, :images, :date, :type, :user_id)");
+        // Insert the new tip with translations
+        $stmt = $pdo->prepare("INSERT INTO tips (title, description, images, date, type, user_id, title_fr, description_fr, title_ar, description_ar) 
+                              VALUES (:title, :description, :images, :date, :type, :user_id, :title_fr, :description_fr, :title_ar, :description_ar)");
         
         $stmt->bindParam(':title', $title);
         $stmt->bindParam(':description', $description);
@@ -162,6 +172,10 @@ error_log("Attempting to insert tip with user_id: " . $user_id);
         $stmt->bindParam(':date', $date);
         $stmt->bindParam(':type', $type);
         $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':title_fr', $title_fr);
+        $stmt->bindParam(':description_fr', $description_fr);
+        $stmt->bindParam(':title_ar', $title_ar);
+        $stmt->bindParam(':description_ar', $description_ar);
         
         if ($stmt->execute()) {
             $pdo->commit();
@@ -193,11 +207,11 @@ error_log("Attempting to insert tip with user_id: " . $user_id);
         $_SESSION['error_message'] = "Database error occurred while adding tip: " . $e->getMessage();
     }
     
-    header('Location: ../tips.php');
+    header('Location: ../tips.php?lang=' . $lang);
     exit();
     
 } else {
     $_SESSION['error_message'] = "Invalid request method";
-    header('Location: ../tips.php');
+    header('Location: ../tips.php?lang=' . $lang);
     exit();
 }

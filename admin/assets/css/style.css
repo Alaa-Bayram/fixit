@@ -972,3 +972,79 @@ a:hover {
   outline: 2px solid var(--secondary);
   outline-offset: 2px;
 }
+
+[dir="rtl"] .sidebar {
+    right: 0;
+    left: auto;
+}
+
+[dir="rtl"] .home-section {
+    left: 0;
+    right: 240px;
+}
+
+[dir="rtl"] .sidebar.active ~ .home-section {
+    right: 60px;
+    left: 0;
+}
+
+[dir="rtl"] .sidebar.active ~ .home-section {
+    width: calc(100% - 60px);
+    right: 60px;
+    left: auto;
+}
+
+[dir="rtl"] .sidebar .nav-links li i {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+[dir="rtl"] .sidebar .logo-details .logo {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+[dir="rtl"] .sidebar .nav-links .log_out {
+    right: 0;
+    left: auto;
+}
+
+/* For RTL language specific adjustments */
+[dir="rtl"] .sidebar .nav-links li a {
+    padding-right: 10px;
+    padding-left: 0;
+}
+
+[dir="rtl"] .sidebar .nav-links li a .links_name {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+/* Responsive adjustments for RTL */
+@media (max-width: 1000px) {
+    [dir="rtl"] .home-section {
+        right: 60px;
+        left: 0;
+    }
+    
+    [dir="rtl"] .sidebar.active ~ .home-section {
+        right: 240px;
+        left: 0;
+    }
+}
+
+@media (max-width: 550px) {
+    [dir="rtl"] .sidebar.active ~ .home-section {
+        right: 240px;
+        left: 0;
+    }
+}
+[dir="rtl"] .sidebar {
+    right: 0;
+    left: auto;
+}
+
+[dir="rtl"] .home-section {
+    right: 240px;
+    left: 0;
+}

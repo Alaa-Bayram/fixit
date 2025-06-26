@@ -8,31 +8,42 @@ if (!is_admin_logged_in()) {
     redirect('login.php', $trans['please_log_in']);
 }
 
-// Check if service ID is provided
-if (!isset($_GET['id']) || empty($_GET['id'])) {
-    redirect('all_services.php?lang=' . $lang, $trans['invalid_service_id']);
+// Initialize variables
+$service = null;
+$error_message = '';
+$success_message = '';
+$service_id = null;
+
+// Get service ID from URL or POST
+if (isset($_GET['id'])) {
+    $service_id = filter_var($_GET['id'], FILTER_VALIDATE_INT);
+} elseif (isset($_POST['service_id'])) {
+    $service_id = filter_var($_POST['service_id'], FILTER_VALIDATE_INT);
 }
 
-$service_id = sanitize_input($_GET['id']);
-$service = null;
+// Validate service ID
+if ($service_id === false || $service_id <= 0) {
+    redirect('all_services.php?lang=' . $lang, $trans['invalid_service_id'] ?? "Invalid service ID.");
+}
 
-// Fetch service details
+// Fetch the service data
 try {
     $stmt = $pdo->prepare("SELECT * FROM services WHERE service_id = :service_id");
-    $stmt->bindParam(':service_id', $service_id);
+    $stmt->bindParam(':service_id', $service_id, PDO::PARAM_INT);
     $stmt->execute();
-    $service = $stmt->fetch();
+    
+    $service = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$service) {
-        redirect('all_services.php?lang=' . $lang, $trans['service_not_found']);
+        redirect('all_services.php?lang=' . $lang, $trans['service_not_found'] ?? "Service not found.");
     }
 } catch (PDOException $e) {
-    error_log('Database Error: ' . $e->getMessage());
+    error_log('Database Error in edit_service.php (fetch): ' . $e->getMessage());
     redirect('all_services.php?lang=' . $lang, $trans['database_error']);
 }
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// Handle form submission for updating service
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_service'])) {
     // Verify CSRF token
     if (!isset($_POST['csrf_token'])) {
         set_flash_message('error', $trans['invalid_form_submission']);
@@ -46,13 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
     }
     
-    // Sanitize input for all languages
-    $title = sanitize_input($_POST['title'] ?? '');
-    $description = sanitize_input($_POST['desc'] ?? '');
-    $title_fr = sanitize_input($_POST['title_fr'] ?? '');
-    $description_fr = sanitize_input($_POST['desc_fr'] ?? '');
-    $title_ar = sanitize_input($_POST['title_ar'] ?? '');
-    $description_ar = sanitize_input($_POST['desc_ar'] ?? '');
+    // Sanitize input for all languages - DON'T HTML encode here
+    $title = trim(stripslashes($_POST['title'] ?? ''));
+    $description = trim(stripslashes($_POST['description'] ?? ''));
+    $title_fr = trim(stripslashes($_POST['title_fr'] ?? ''));
+    $description_fr = trim(stripslashes($_POST['description_fr'] ?? ''));
+    $title_ar = trim(stripslashes($_POST['title_ar'] ?? ''));
+    $description_ar = trim(stripslashes($_POST['description_ar'] ?? ''));
     
     // Validate input - at least English fields are required
     if (empty($title) || empty($description)) {
@@ -117,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit();
             }
         } else {
-            // Update only title, description and language fields
+            // Update only text fields
             $stmt = $pdo->prepare("UPDATE services SET title = :title, description = :description, title_fr = :title_fr, description_fr = :description_fr, title_ar = :title_ar, description_ar = :description_ar WHERE service_id = :service_id");
             $stmt->bindParam(':title', $title);
             $stmt->bindParam(':description', $description);
@@ -129,11 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         
         if ($stmt->execute()) {
-            set_flash_message('success', $trans['service_updated_successfully']);
+            set_flash_message('success', $trans['service_updated_successfully'] ?? 'Service updated successfully.');
             header('Location: all_services.php?lang=' . $lang);
             exit();
         } else {
-            set_flash_message('error', $trans['failed_update_service']);
+            set_flash_message('error', $trans['failed_update_service'] ?? 'Failed to update service.');
         }
     } catch (PDOException $e) {
         error_log('Database Error: ' . $e->getMessage());
@@ -145,6 +156,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit();
 }
 
+// Check for flash messages
+if (isset($_SESSION['error_message'])) {
+    $error_message = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
+}
+
+if (isset($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+}
+
 // Include header
 include_once 'includes/header.php';
 ?>
@@ -152,20 +174,22 @@ include_once 'includes/header.php';
 <div class="home-content">
     <div class="sales-boxes">
         <div class="recent-sales box">
-            <div class="title"><?php echo $trans['edit_service']; ?></div>
-            
-            <?php if (has_flash_message('error')): ?>
-                <div class="alert alert-danger"><?php echo get_flash_message('error'); ?></div>
+            <div class="title"><?php echo $trans['edit_service'] ?? 'Edit Service'; ?></div>
+
+            <?php if ($success_message): ?>
+                <div class="alert alert-success"><?php echo h($success_message); ?></div>
             <?php endif; ?>
-            
-            <?php if (has_flash_message('success')): ?>
-                <div class="alert alert-success"><?php echo get_flash_message('success'); ?></div>
+
+            <?php if ($error_message): ?>
+                <div class="alert alert-danger"><?php echo h($error_message); ?></div>
             <?php endif; ?>
-            
+
             <div class="sales-details">
-                <form method="POST" action="edit_service.php?id=<?php echo h($service_id); ?>&lang=<?php echo $lang; ?>" enctype="multipart/form-data" class="service-form">
+                <form method="POST" class="service-form" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
-                    
+                    <input type="hidden" name="service_id" value="<?php echo h($service['service_id']); ?>">
+                    <input type="hidden" name="update_service" value="1">
+
                     <!-- Language Tabs -->
                     <div class="language-tabs">
                         <div class="tab active" data-lang="en">English</div>
@@ -176,73 +200,84 @@ include_once 'includes/header.php';
                     <!-- English Fields -->
                     <div class="language-content active" id="lang-en">
                         <div class="field">
-                            <label for="title"><?php echo $trans['title']; ?> (English) *</label>
-                            <input type="text" id="title" name="title" value="<?php echo htmlspecialchars_decode(h($service['title'], ENT_QUOTES)); ?>" required maxlength="100" placeholder="<?php echo $trans['enter_service_title']; ?>">
+                            <label for="title"><?php echo $trans['title'] ?? 'Title'; ?> (English) *</label>
+                            <input type="text" id="title" name="title" value="<?php echo h($service['title']); ?>" required maxlength="100" placeholder="<?php echo $trans['enter_service_title'] ?? 'Enter service title'; ?>">
                             <div class="error-message" id="title_error"></div>
                         </div>
-                        
+
                         <div class="field">
-                            <label for="desc"><?php echo $trans['description']; ?> (English) *</label>
-                            <textarea id="desc" name="desc" required maxlength="500" rows="4" placeholder="<?php echo $trans['enter_service_description']; ?>"><?php echo htmlspecialchars_decode(h($service['description'], ENT_QUOTES)); ?></textarea>
-                            <div class="error-message" id="desc_error"></div>
+                            <label for="description"><?php echo $trans['description'] ?? 'Description'; ?> (English) *</label>
+                            <textarea id="description" name="description" required maxlength="500" rows="4" placeholder="<?php echo $trans['enter_service_description'] ?? 'Enter service description'; ?>"><?php echo h($service['description']); ?></textarea>
+                            <div class="error-message" id="description_error"></div>
                         </div>
                     </div>
                     
                     <!-- French Fields -->
                     <div class="language-content" id="lang-fr">
                         <div class="field">
-                            <label for="title_fr"><?php echo $trans['title']; ?> (Français)</label>
-                            <input type="text" id="title_fr" name="title_fr" value="<?php echo htmlspecialchars_decode(h($service['title_fr'] ?? '', ENT_QUOTES)); ?>" maxlength="100" placeholder="Entrez le titre du service">
+                            <label for="title_fr"><?php echo $trans['title'] ?? 'Title'; ?> (Français)</label>
+                            <input type="text" id="title_fr" name="title_fr" value="<?php echo h($service['title_fr'] ?? ''); ?>" maxlength="100" placeholder="Entrez le titre du service">
                         </div>
                         
                         <div class="field">
-                            <label for="desc_fr"><?php echo $trans['description']; ?> (Français)</label>
-                            <textarea id="desc_fr" name="desc_fr" maxlength="500" rows="4" placeholder="Entrez la description du service"><?php echo htmlspecialchars_decode(h($service['description_fr'] ?? '', ENT_QUOTES)); ?></textarea>
+                            <label for="description_fr"><?php echo $trans['description'] ?? 'Description'; ?> (Français)</label>
+                            <textarea id="description_fr" name="description_fr" maxlength="500" rows="4" placeholder="Entrez la description du service"><?php echo h($service['description_fr'] ?? ''); ?></textarea>
                         </div>
                     </div>
                     
                     <!-- Arabic Fields -->
                     <div class="language-content" id="lang-ar">
                         <div class="field">
-                            <label for="title_ar"><?php echo $trans['title']; ?> (العربية)</label>
-                            <input type="text" id="title_ar" name="title_ar" value="<?php echo htmlspecialchars_decode(h($service['title_ar'] ?? '', ENT_QUOTES)); ?>" maxlength="100" placeholder="أدخل عنوان الخدمة" dir="rtl">
+                            <label for="title_ar"><?php echo $trans['title'] ?? 'Title'; ?> (العربية)</label>
+                            <input type="text" id="title_ar" name="title_ar" value="<?php echo h($service['title_ar'] ?? ''); ?>" maxlength="100" placeholder="أدخل عنوان الخدمة" dir="rtl">
                         </div>
                         
                         <div class="field">
-                            <label for="desc_ar"><?php echo $trans['description']; ?> (العربية)</label>
-                            <textarea id="desc_ar" name="desc_ar" maxlength="500" rows="4" placeholder="أدخل وصف الخدمة" dir="rtl"><?php echo htmlspecialchars_decode(h($service['description_ar'] ?? '', ENT_QUOTES)); ?></textarea>
+                            <label for="description_ar"><?php echo $trans['description'] ?? 'Description'; ?> (العربية)</label>
+                            <textarea id="description_ar" name="description_ar" maxlength="500" rows="4" placeholder="أدخل وصف الخدمة" dir="rtl"><?php echo h($service['description_ar'] ?? ''); ?></textarea>
                         </div>
                     </div>
-                    
-                    <!-- Image Field -->
-                    <div class="field">
-                        <label for="image"><?php echo !empty($service['images']) ? $trans['replace_image_optional'] : $trans['upload_image']; ?></label>
-                        <?php if (!empty($service['images'])): ?>
+
+                    <?php if (!empty($service['images'])): ?>
+                        <div class="field">
+                            <label><?php echo $trans['current_image'] ?? 'Current Image'; ?></label>
                             <div class="current-image">
-                                <img src="../public/images/<?php echo htmlspecialchars_decode(h($service['images'], ENT_QUOTES)); ?>" alt="<?php echo $trans['current_image']; ?>" class="service-thumbnail" onerror="this.style.display='none'">
-                                <p><?php echo $trans['current_image']; ?>: <?php echo htmlspecialchars_decode(h($service['images'], ENT_QUOTES)); ?></p>
+                                <?php
+                                $image_path = '../public/images/' . h($service['images']);
+                                if (file_exists($image_path) || filter_var($image_path, FILTER_VALIDATE_URL)):
+                                ?>
+                                    <img src="<?php echo $image_path; ?>" alt="Current Image" class="service-thumbnail" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                    <p style="display: none; color: #e74c3c;">Image could not be loaded: <?php echo h($service['images']); ?></p>
+                                <?php else: ?>
+                                    <p style="color: #e74c3c;">Image file not found: <?php echo h($service['images']); ?></p>
+                                <?php endif; ?>
+                                <p>Current image: <?php echo h($service['images']); ?></p>
                             </div>
-                        <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="field">
+                        <label for="image"><?php echo !empty($service['images']) ? ($trans['replace_image_optional'] ?? 'Replace Image (Optional)') : ($trans['upload_image'] ?? 'Upload Image'); ?></label>
                         <div class="file-upload-wrapper">
                             <input type="file" id="image" name="image" accept="image/x-png,image/gif,image/jpeg,image/jpg" class="upload">
                             <label for="image" class="file-upload-label">
                                 <i class="bx bx-cloud-upload"></i>
-                                <span><?php echo $trans['choose_file']; ?></span>
+                                <span><?php echo $trans['choose_file'] ?? 'Choose a file'; ?></span>
                             </label>
-                            <div class="file-upload-name" id="file_name"><?php echo $trans['no_file_chosen']; ?></div>
+                            <div class="file-upload-name" id="file_name"><?php echo $trans['no_file_chosen'] ?? 'No file chosen'; ?></div>
                         </div>
-                        <small class="form-text"><?php echo $trans['image_size_2mb_formats']; ?> | <?php echo $trans['only_jpg_png_gif']; ?></small>
+                        <small class="form-text"><?php echo $trans['image_size_2mb_formats'] ?? 'Max size: 2MB'; ?> | <?php echo $trans['only_jpg_png_gif'] ?? 'Formats: JPG, PNG, GIF'; ?></small>
                         <div class="error-message" id="image_error"></div>
                     </div>
-                    
+
                     <div class="button-group">
                         <button type="submit" class="btn btn-update">
-                            <span class="btn-text"><?php echo $trans['update_service']; ?></span>
+                            <span class="btn-text"><?php echo $trans['update_service'] ?? 'Update Service'; ?></span>
                             <span class="btn-loader" style="display:none;">
                                 <i class="bx bx-loader bx-spin"></i>
                             </span>
                         </button>
-                        <a href="all_services.php?lang=<?php echo $lang; ?>" class="btn btn-cancel"><?php echo $trans['cancel']; ?></a>
+                        <a href="all_services.php?lang=<?php echo $lang; ?>" class="btn btn-cancel"><?php echo $trans['cancel'] ?? 'Cancel'; ?></a>
                     </div>
                 </form>
             </div>
@@ -279,7 +314,7 @@ include_once 'includes/header.php';
     .tab.active {
         background: #fff;
         border-bottom: 2px solid #fff;
-        color: #ff6c40e4;
+        color: #f97f4b;
         font-weight: 600;
     }
 
@@ -426,7 +461,7 @@ include_once 'includes/header.php';
     }
 
     .btn-update {
-        background-color: #ff6c40e4;
+        background-color: #f97f4b;
         color: white;
     }
 
@@ -437,7 +472,7 @@ include_once 'includes/header.php';
     }
 
     .btn-update:hover {
-        background-color: #e65c30;
+        background-color: #d35400;
     }
 
     .btn-cancel:hover {
@@ -522,206 +557,81 @@ include_once 'includes/header.php';
             padding: 8px 12px;
         }
     }
+    
     <?php if ($lang === 'ar'): ?>
-/* Arabic RTL Styling - Properly Fixed */
-body {
-    direction: rtl;
-    text-align: right;
-    font-family: 'Tajawal', 'Arial', sans-serif;
-}
-
-/* Sidebar Positioning - ON THE RIGHT SIDE */
-.sidebar {
-    left: auto;
-    right: 0;
-    transition: all 0.5s ease;
-}
-
-/* Main Content Area - positioned from the right */
-.home-section {
-    position: relative;
-    left: auto;
-    right: 260px;
-    width: calc(100% - 260px);
-    transition: all 0.5s ease;
-}
-
-/* When Sidebar is Closed/Minimized */
-.sidebar.close {
-    width: 78px;
-}
-
-.sidebar.close ~ .home-section {
-    right: 78px;
-    left: auto;
-    width: calc(100% - 78px);
-}
-
-/* Mobile view when sidebar is toggled */
-@media (max-width: 1090px) {
-    .sidebar {
-        right: -260px;
-        left: auto;
-    }
-    
-    .sidebar.active {
-        right: 0;
-    }
-    
-    .home-section {
-        right: 0;
-        left: auto;
-        width: 100%;
-    }
-    
-    .sidebar.active ~ .home-section {
-        right: 260px;
-        left: auto;
-        width: calc(100% - 260px);
-    }
-    
-    .sidebar.close.active ~ .home-section {
-        right: 78px;
-        left: auto;
-        width: calc(100% - 78px);
-    }
-}
-
-/* Fix service items layout */
-.top-sales-details li {
-    padding: 10px 0 10px 20px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    flex-direction: row-reverse;
-}
-
-/* Service info alignment */
-.service-info {
-    margin-left: 15px;
-    margin-right: 0;
-    text-align: right;
-    flex: 1;
-}
-
-/* Form field alignment */
-.service-form .field {
-    text-align: right;
-}
-
-/* Input fields styling */
-.service-form input[type="text"] {
-    text-align: right;
-    padding: 12px 15px;
-}
-
-/* Fix file upload label alignment */
-.file-upload-wrapper {
-    direction: rtl;
-}
-
-.file-upload-label {
-    justify-content: center;
-    flex-direction: row-reverse;
-}
-
-.file-upload-label i {
-    margin-right: 0;
-    margin-left: 8px;
-}
-
-/* Box layout adjustments */
-.box {
-    text-align: right;
-}
-
-.box-topic, .number, .indicator {
-    text-align: right;
-}
-
-/* Icon positioning in boxes - move to left side */
-.box i {
-    left: 15px;
-    right: auto;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .top-sales-details li {
-        flex-direction: column;
-        align-items: flex-end;
-    }
-    
-    .service-info {
-        margin-left: 0;
-        margin-top: 10px;
+    /* Arabic RTL Styling */
+    body {
+        direction: rtl;
         text-align: right;
+        font-family: 'Tajawal', 'Arial', sans-serif;
     }
-}
 
-@media (max-width: 480px) {
     .sidebar {
-        right: -100%;
         left: auto;
-    }
-    
-    .sidebar.active {
         right: 0;
-        width: 260px;
+        transition: all 0.5s ease;
     }
-    
-    .sidebar.close.active {
+
+    .home-section {
+        position: relative;
+        left: auto;
+        right: 260px;
+        width: calc(100% - 260px);
+        transition: all 0.5s ease;
+    }
+
+    .sidebar.close {
         width: 78px;
     }
-    
-    .home-section {
-        right: 0;
-        left: auto;
-        width: 100%;
-    }
-    
-    .sidebar.active ~ .home-section {
-        right: 260px;
-        left: auto;
-        width: calc(100% - 260px);
-    }
-    
-    .sidebar.close.active ~ .home-section {
+
+    .sidebar.close ~ .home-section {
         right: 78px;
         left: auto;
         width: calc(100% - 78px);
     }
-}
 
-/* Additional RTL layout fixes */
-.sales-boxes, .overview-boxes {
-    direction: rtl;
-}
+    @media (max-width: 1090px) {
+        .sidebar {
+            right: -260px;
+            left: auto;
+        }
+        
+        .sidebar.active {
+            right: 0;
+        }
+        
+        .home-section {
+            right: 0;
+            left: auto;
+            width: 100%;
+        }
+    }
 
-/* File upload specific fixes */
-.file-upload-name, .form-text, .error-message {
-    text-align: right;
-}
+    .service-form .field {
+        text-align: right;
+    }
 
-/* Dropdown menus */
-.dropdown-menu {
-    left: auto;
-    right: 0;
-}
+    .file-upload-wrapper {
+        direction: rtl;
+    }
 
-/* Service thumbnail container */
-.top-sales-details li a {
-    order: 2;
-}
+    .file-upload-label {
+        justify-content: center;
+        flex-direction: row-reverse;
+    }
 
-.service-info {
-    order: 1;
-}
-<?php endif; ?>
+    .file-upload-label i {
+        margin-right: 0;
+        margin-left: 8px;
+    }
+
+    .box {
+        text-align: right;
+    }
+    <?php endif; ?>
 </style>
 
 <script>
-    // Display the popup if it has content
     document.addEventListener('DOMContentLoaded', function() {
         // Language tab switching
         const tabs = document.querySelectorAll('.tab');
@@ -743,7 +653,7 @@ body {
 
         // File upload name display
         document.getElementById('image').addEventListener('change', function() {
-            const fileName = this.files[0] ? this.files[0].name : '<?php echo $trans['no_file_chosen']; ?>';
+            const fileName = this.files[0] ? this.files[0].name : '<?php echo $trans['no_file_chosen'] ?? 'No file chosen'; ?>';
             document.getElementById('file_name').textContent = fileName;
         });
 
@@ -758,19 +668,19 @@ body {
                     el.style.display = 'none';
                 });
 
-                // Validate title (English is required)
+                // Validate title
                 const title = this.querySelector('#title');
                 if (title.value.trim().length < 3) {
-                    document.getElementById('title_error').textContent = '<?php echo $trans['title_min_length'] ?? 'Title must be at least 3 characters long.'; ?>';
+                    document.getElementById('title_error').textContent = 'Title must be at least 3 characters long';
                     document.getElementById('title_error').style.display = 'block';
                     isValid = false;
                 }
 
-                // Validate description (English is required)
-                const desc = this.querySelector('#desc');
-                if (desc.value.trim().length < 10) {
-                    document.getElementById('desc_error').textContent = '<?php echo $trans['desc_min_length'] ?? 'Description must be at least 10 characters long.'; ?>';
-                    document.getElementById('desc_error').style.display = 'block';
+                // Validate description
+                const description = this.querySelector('#description');
+                if (description.value.trim().length < 10) {
+                    document.getElementById('description_error').textContent = 'Description must be at least 10 characters long';
+                    document.getElementById('description_error').style.display = 'block';
                     isValid = false;
                 }
 
@@ -782,13 +692,13 @@ body {
                     const maxSize = 2 * 1024 * 1024; // 2MB
 
                     if (!allowedTypes.includes(file.type)) {
-                        document.getElementById('image_error').textContent = '<?php echo $trans['invalid_file_type'] ?? 'Invalid file type. Only JPG, PNG and GIF are allowed.'; ?>';
+                        document.getElementById('image_error').textContent = 'Only JPG, PNG, and GIF images are allowed';
                         document.getElementById('image_error').style.display = 'block';
                         isValid = false;
                     }
 
                     if (file.size > maxSize) {
-                        document.getElementById('image_error').textContent = '<?php echo $trans['file_size_limit'] ?? 'File size must be less than 2MB.'; ?>';
+                        document.getElementById('image_error').textContent = 'Image size must be less than 2MB';
                         document.getElementById('image_error').style.display = 'block';
                         isValid = false;
                     }
@@ -832,7 +742,7 @@ body {
                 // Create a placeholder
                 const placeholder = document.createElement('span');
                 placeholder.className = 'no-image';
-                placeholder.textContent = '<?php echo $trans['image_not_available'] ?? 'Image not available'; ?>';
+                placeholder.textContent = 'Image not available';
                 this.parentNode.insertBefore(placeholder, this);
             });
         });
