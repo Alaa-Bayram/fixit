@@ -50,6 +50,17 @@ return [
     'region_beirut' => 'Beirut',
     'region_baalbek' => 'Baalbek-Hermel',
 
+    'review_title' => 'Add Review for',
+        'service_label' => 'Service:',
+        'speed_label' => 'Speed:',
+        'cleanliness_label' => 'Cleanliness:',
+        'professionalism_label' => 'Professionalism:',
+        'communication_label' => 'Communication:',
+        'feedback_label' => 'Detailed Feedback:',
+        'submit_btn' => 'Submit Review',
+
+    'back_to_articles'=> 'Back',
+
     'emergency_title' => 'Emergency Help',
     'emergency_heading' => 'Emergency Help',
     'emergency_note' => 'If you\'re facing an <b>urgent</b> problem that needs immediate attention, please fill out the form below.<br> Our <b>available workers</b> will respond as quickly as possible to assist you.',
@@ -125,6 +136,57 @@ return [
     2- Turn off the tap while brushing your teeth or shaving to conserve water.<br>
     3- Adjust sprinklers to avoid watering sidewalks, driveways, or other non-landscaped areas.',
     'top' => 'Top',
+
+
+     'appointments_title' => "Appointment Requests",
+    'appointments_subtitle' => "Manage your schedule and provide excellent service to your clients",
+    'hide_accepted' => "Hide Accepted",
+    'show_accepted' => "Show Accepted",
+    'pending' => "Pending",
+    'accepted' => "Accepted",
+    'rejected' => "Rejected",
+    'no_appointments' => "No Appointments Found",
+    'no_appointments_msg' => "You currently have no appointment requests. Check back later.",
+    'accept' => "Accept",
+    'reject' => "Reject",
+    'appointment_accepted' => "Appointment Accepted",
+    'appointment_rejected' => "Appointment Rejected",
+
+    'emergency_requests' => 'Emergency Service Requests',
+    'emergency_subtitle' => 'Respond promptly to urgent service requests in your specialty area.',
+    'pending_requests' => 'Pending Requests',
+    'all_requests' => 'All Requests',
+    'description' => 'Description',
+    'location' => 'Location',
+    'contact' => 'Contact',
+    'submitted' => 'Submitted',
+    'submit_offer' => 'Submit Offer',
+    'no_requests' => 'No Emergency Requests Available',
+    'no_requests_desc1' => 'There are currently no emergency service requests matching your specialty.',
+    'no_requests_desc2' => 'Check back later or update your availability settings.',
+
+       'dashboard_title'      => 'Dashboard - Fixit Worker Portal',
+    'welcome'              => 'Welcome',
+    'dashboard_subtitle'   => 'Your professional dashboard for managing jobs, clients, and earnings.',
+    'your_profile'         => 'Your Profile',
+    'details'              => 'Details',
+    'id'                   => 'ID',
+    'skills'               => 'Skills',
+    'region'               => 'Region',
+    'phone'                => 'Phone',
+    'view_full_profile'    => 'View Full Profile',
+    'activity_summary'     => 'Activity Summary',
+    'emergency_cases'      => 'Emergency Cases',
+    'pending_requests'     => 'Pending Requests',
+    'next_appointment'     => 'Next Appointment',
+    'earnings'             => 'Earnings',
+    'appointments'         => 'Appointments',
+    'emergencies'          => 'Emergencies',
+    'total_earnings'       => 'Total Earnings',
+    'view'                 => 'View',
+    'chat_with_clients'    => 'Chat with clients',
+
+
 
 
     

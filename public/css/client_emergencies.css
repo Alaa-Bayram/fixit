@@ -44,8 +44,8 @@
 
 .client-stat-number {
     display: block;
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 1.5rem;
+    font-weight: 650;
     color: rgba(255, 81, 0, 0.858);
     line-height: 1;
 }
@@ -134,26 +134,28 @@
     border-color: rgba(255, 81, 0, 0.858);
 }
 
-/* Emergencies Grid */
+/* Emergencies Grid - Fixed Layout */
 .client-emergencies-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+    align-items: stretch; /* Makes cards in same row equal height */
+    margin-bottom: 30px;
 }
 
+/* Standardized Card Layout */
 .client-emergency-card {
     background: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Crucial for equal height cards */
 }
 
-.client-emergency-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
+/* Card Header - Fixed Height */
 .client-card-header {
     display: flex;
     justify-content: space-between;
@@ -161,68 +163,66 @@
     padding: 15px;
     background: #7dc7bb21;
     border-bottom: 1px solid #e2e8f0;
+    min-height: 60px; /* Ensures consistent header height */
 }
 
-.client-request-id {
-    font-size: 0.8rem;
-    color: #718096;
-    font-weight: 500;
-}
-
-.client-status-badge {
-    font-size: 0.75rem;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.status-pending {
-    background-color: #f6ad55; /* Yellow for pending */
-    color: white;
-}
-
-.status-other {
-    background-color: #68d391; /* Green for other statuses */
-    color: white;
-}
-
+/* Card Body - Flexible Content */
 .client-card-body {
     padding: 20px;
+    flex: 1; /* Takes remaining space */
+    display: flex;
+    flex-direction: column;
 }
 
-.client-card-body h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #2d3748;
-}
-
-.client-description {
-    color: #4a5568;
-    font-size: 0.95rem;
-    margin-bottom: 15px;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
+/* Contact Info - Better Layout */
 .client-meta-info {
     display: flex;
-    gap: 15px;
+    flex-direction: column; /* Stack contact items vertically */
+    gap: 8px;
     font-size: 0.85rem;
     color: #718096;
+    margin-bottom: 15px;
 }
 
-.client-meta-info i {
-    margin-right: 5px;
+/* Offer Details - Pushed to Bottom */
+.offer-details {
+    margin-top: auto; /* Pushes to bottom of card */
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 6px;
 }
 
+.client-offer-detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+/* Card Footer - Fixed Height */
 .client-card-footer {
     display: flex;
     padding: 15px;
     border-top: 1px solid #e2e8f0;
     gap: 10px;
+    min-height: 60px; /* Consistent footer height */
 }
+
+/* Action Buttons - Equal Width */
+.client-action-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+
 
 .client-action-btn {
     display: inline-flex;
@@ -287,7 +287,96 @@
     color: #4a5568;
     margin-bottom: 20px;
 }
+/* Add these to your existing client_emergencies.css */
 
+/* Professional Card Enhancements */
+.client-offer-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Crucial for equal height */
+    transition: all 0.3s ease;
+}
+
+.client-offer-card:hover {
+    border-color: #7dc7bb;
+    box-shadow: 0 5px 20px rgba(125, 199, 187, 0.15);
+}
+
+/* Professional Info Section */
+.professional-info {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+/* Offer Details Styling */
+.offer-details {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: auto; /* Pushes this to the bottom of the card body */
+}
+
+
+.client-offer-detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.client-offer-detail:last-child {
+    margin-bottom: 0;
+}
+
+.client-offer-detail i {
+    color: #7dc7bb;
+    width: 16px;
+    text-align: center;
+}
+
+/* Secondary Action Button */
+.client-action-btn.secondary {
+    background: white;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.client-action-btn.secondary:hover {
+    background: #f8fafc;
+    border-color: #cbd5e0;
+}
+
+/* Empty State Enhancements */
+.client-empty-icon {
+    color: #a0aec0;
+    background: #f8fafc;
+    width: 80px;
+    height: 80px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .client-card-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .client-action-btn {
+        width: 100%;
+    }
+}
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .client-emergencies-header {

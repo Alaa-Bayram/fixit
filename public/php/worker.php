@@ -87,7 +87,7 @@ try {
         'experience' => (int)$_POST['experience'],
         'region' => mysqli_real_escape_string($conn, $_POST['region']),
         'address' => mysqli_real_escape_string($conn, $_POST['address']),
-        'fees' => (float)$_POST['fees'],
+        'fees' => mysqli_real_escape_string($conn, $_POST['fees']),
         'img' => $new_img_name,
         'pdf' => $pdf_path,
         'status' => 'Offline Now',

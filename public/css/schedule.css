@@ -1,0 +1,160 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.planner {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #7c7c7c;
+    color: white;
+    padding: 10px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.5em;
+    padding: 10px;
+}
+
+.header p {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.header button {
+    background-color: #7c7c7c;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.header button:hover {
+    background-color: #6e6e6e;
+}
+.total-cost {
+    background-color: #ee875c;
+    padding: 7px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.schedule {
+    display: grid;
+    grid-template-columns: 0.2fr 0.8fr 0.5fr 0.5fr 0.5fr;
+    grid-gap: 10px;
+}
+
+.time-slot {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    width: 70px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.event {
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.no-appointments {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 1000px;
+    font-size: 1.3em; /* Adjust font size as needed */
+    text-align: center;
+    color: #ee875c;
+}
+
+
+.print {
+    background-color: #28a745;
+}
+
+.print:hover {
+    background-color: #218838;
+}
+
+.time-slot {
+    font-weight: bold;
+}
+
+
+
+.notes {
+    flex: 1;
+    margin-left: 10px;
+}
+
+textarea.notes-input {
+    width: 100%;
+    min-height: 70px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+
+/* Print Styles */
+@media print {
+    body {
+        display: block;
+        margin: 0;
+        padding: 0;
+        background-color: white;
+    }
+
+    .planner {
+        box-shadow: none;
+        width: 90%;
+        border-radius: 0;
+    }
+
+
+    .schedule {
+        background-color: white;
+    }
+
+    .hour, .event {
+        border: 2px solid rgb(161, 161, 161);
+    }
+
+    .event {
+        background-color: white;
+    }
+
+    .event:empty {
+        background-color: white;
+    }
+}

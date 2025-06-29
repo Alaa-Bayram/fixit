@@ -60,7 +60,9 @@ if (file_exists($lang_file)) {
 <section class="services" id="services">
     <h2><?= $translations['our_services'] ?></h2>
     <p><?= $translations['explore_services'] ?></p>
-    <a href="services.php"> <button class="btn btn4"><?= $translations['view_all'] ?? 'View All' ?></button></a>
+    <a href="services.php?lang=<?= $lang ?>"> 
+    <button class="btn btn4"><?= $translations['view_all'] ?? 'View All' ?></button>
+</a>
     <script>
     const bookNowText = <?= json_encode($translations['book_now'] ?? 'Book Now') ?>;
     </script>
@@ -232,7 +234,7 @@ if (file_exists($lang_file)) {
                 <img src="images/${service.images}" alt="${service.title}">
                 <h3>${service.title}</h3>
                 <p>${service.description}</p>
-                <a href="list_workers.php?service_id=${encodeURIComponent(service.service_id)}">
+                <a href="list_workers.php?service_id=${encodeURIComponent(service.service_id)}&lang=${currentLang}">
                     <button class="btn btn2">${bookNowText}</button>
                 </a>
             `;

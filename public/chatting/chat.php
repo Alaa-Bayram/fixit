@@ -27,8 +27,10 @@ if(mysqli_num_rows($result) > 0) {
     exit();
 }
 
-// Language selection (default to English)
-$lang = isset($_GET['lang']) ? $_GET['lang'] : 'en';
+// Set language (priority: GET > SESSION > COOKIE > default 'en')
+$lang = $_GET['lang'] ?? $_SESSION['lang'] ?? $_COOKIE['lang'] ?? 'en';
+$_SESSION['lang'] = $lang;
+setcookie('lang', $lang, time() + (86400 * 30), "/"); // 30 days
 $lang_file = "../lang/$lang.php";
 
 if (file_exists($lang_file)) {
@@ -39,7 +41,7 @@ if (file_exists($lang_file)) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="<?= $lang === 'ar' ? 'rtl' : 'ltr' ?>">
 <body>
 
 <?php include_once "header1.php"; ?>
@@ -84,11 +86,7 @@ if (file_exists($lang_file)) {
                     <?php echo $row['status']; ?>
                 </div>
             </div>
-            <div class="chat-actions">
-             <a href="https://wa.me/<?php echo $row['phone']; ?>" class="action-btn" target="_blank">
-           <i class="fas fa-phone-alt"></i>
-    </a>
-</div>
+
         </div>
         
         <div class="messages-container" id="messagesContainer">

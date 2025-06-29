@@ -127,10 +127,18 @@
 
         <div class="form-group">
           <label for="fees" class="form-label">Choosen Plan</label>
+          <p style="font-size: small; font-style: italic; color:grey">
+            <a href="fees.php" target="_blank">Read More About Plans.</a>
+</p>
+
           <select id="fees" name="fees" class="form-control" required>
-            <option value="">Select your choosen plan</option>
-            <option value="20">20$</option>
-          </select>
+          <option value="">Select your choosen plan</option>
+          <option value="Starter">$50 / 6 months</option>
+          <option value="Professional">$90 / 1 year</option>
+          <option value="Customer Percentage">5% commission on each customer</option>
+
+</select>
+
           <div class="error-message" id="feesError">Please select your choosen plan</div>
         </div>
         
@@ -173,7 +181,7 @@
         <div class="checkbox-group">
           <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
           <label for="agreeTerms" class="checkbox-label">
-            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            I agree to the <a href="policy.php" target="_blank">Terms of Service</a> and <a href="policy.php" target="_blank">Privacy Policy</a>
           </label>
           <div class="error-message" id="termsError">You must agree to the terms</div>
         </div>
@@ -188,7 +196,7 @@
       <div class="success-message" id="successMessage">
         <i class="fas fa-check-circle success-icon"></i>
         <h3 class="success-title">Application Submitted Successfully!</h3>
-        <p class="success-text">Thank you for applying. We'll review your application and get back to you within 3 business days.</p>
+        <p class="success-text">Thank you for applying. We'll review your application and get back to you within 5-7 business days.</p>
         <a href="welcome.html" class="btn btn-primary">Return to Home</a>
       </div>
     </form>

@@ -554,6 +554,7 @@ footer a {
   border: 2px solid #7dc7bbcf;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.373);
   margin: 30px;
+  width: 800px;
   max-width: 100%;
   height: auto;
 }
@@ -578,6 +579,8 @@ footer a {
 
 .article .articleparag {
   text-align: center;
+  margin-left: 270px;
+  margin-right: 270px;
 }
 
 .article pre {
@@ -590,50 +593,66 @@ footer a {
   margin: 20px 0;
   max-width: 100%;
 }
-
 .cards-worker {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: flex; /* Change from grid to flex */
+  flex-direction: column; /* Stack children vertically */
+  gap: 30px;
   padding: 20px;
   margin: 0 auto;
+  max-width: 1200px;
 }
 
 .cards-worker .card-worker {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row; /* Keep row layout for card content */
+  align-items: flex-start;
   padding: 20px;
   list-style: none;
-  border-radius: 2px;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
-  width: 90%;
-  max-width: 500px;
-  text-align: center;
-  border: 1px solid #7dc7bbdf;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%; /* Ensure full width */
+  border: 1px solid #84bbb1c3;
+}
+
+/* Keep all other styles the same */
+.card-worker:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
 .card-content {
   flex: 1;
-  width: 100%;
+  padding-right: 20px;
+  text-align: left;
 }
 
 .card-image {
-  margin-bottom: 20px;
+  margin-left: 20px;
+  flex-shrink: 0;
 }
 
 .card-image img {
-  width: 100%;
-  max-width: 190px;
-  height: auto;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #79bcb1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-right: 30px;
 }
 
 .cards-worker .card-worker h3 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #333;
+  margin: 0 0 10px 0;
+  font-size: 1.3rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.cards-worker .card-worker p {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
 }
 
 .cards-worker .card-worker p {
@@ -643,7 +662,6 @@ footer a {
 .cards-worker .card-worker .btn {
   margin-top: 15px;
 }
-
 .blur-bg-overlay {
   position: fixed;
   top: 0;
@@ -779,7 +797,7 @@ footer a {
   font-weight: 500;
   border-radius: 3px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 65px;
   background: #7dc7bbdf;
   transition: 0.2s ease;
 }

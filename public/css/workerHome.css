@@ -1,0 +1,329 @@
+/* Professional Worker Dashboard Styles */
+:root {
+    --primary-color: #79bcb1;
+    --secondary-color: #ee875c;
+    --dark-text: #333;
+    --light-text: #f7f9fc;
+    --gray-text: #818181;
+    --border-color: #e1e5eb;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f7f9fc;
+    color: var(--dark-text);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Header Styles (unchanged) */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: var(--primary-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar {
+    display: flex;
+    padding: 0 5px;
+    max-width: 1400px;
+    width: 90%;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 100%;
+    height: 80px;
+}
+
+.navbar .logo a img {
+    width: 145px;
+}
+
+header a {
+    color: var(--light-text);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+header a:hover {
+    color: #fff;
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    margin: 120px auto 40px;
+    padding: 20px;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.welcome-section h1 {
+    color: var(--primary-color);
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: var(--gray-text);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Dashboard Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+/* Card Styles */
+.dashboard-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    padding: 18px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+/* Profile Card Specific Styles */
+.profile-summary .profile-detail {
+    display: flex;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-summary .profile-detail:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    width: 100px;
+}
+
+.detail-value {
+    color: var(--dark-text);
+    flex-grow: 1;
+}
+
+/* Activity Card Specific Styles */
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item i {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    color: var(--primary-color);
+}
+
+.activity-item.emergency i {
+    color: #e74c3c;
+}
+
+.activity-text {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-count {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--dark-text);
+}
+
+.activity-time {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+.activity-label {
+    font-size: 0.9rem;
+    color: var(--gray-text);
+}
+
+.activity-link {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.activity-link:hover {
+    color: #d46a42;
+}
+
+/* Earnings Card Specific Styles */
+.earning-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.earning-total {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0 5px;
+    margin-top: 10px;
+    border-top: 2px solid var(--primary-color);
+}
+
+.earning-label {
+    color: var(--dark-text);
+}
+
+.earning-amount {
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+.earning-total .earning-amount {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* Button Styles */
+.toggle-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background: white;
+    color: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.btn:hover {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.profile-btn {
+    width: 92%;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Month Navigation */
+.month-navigation {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-arrow {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.nav-arrow:hover {
+    color: #e0e0e0;
+}
+
+/* Chat Button */
+.chatbot-toggler {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--secondary-color);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.chatbot-toggler:hover {
+    background: #d46a42;
+    transform: scale(1.05);
+}
+
+.chatbot-toggler i {
+    color: white;
+    font-size: 1.5rem;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none;
+}

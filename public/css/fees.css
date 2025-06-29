@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body{
+    background-color: #4f7b74;
+}
+.programs {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+  }
+
+.programs img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 75%;
+    object-fit: cover; /* Ensures the video covers the entire container */
+  }
+  .programs .content {
+    display: flex;
+    z-index: 3;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #f5f5dc8d;  
+    margin-top: 1vw;
+    width: 70vw;
+    padding: 2vw;
+  }
+  
+  .programs .content h2 {
+    text-align: center;
+    font-size: 2rem;
+  }
+  .programs .content p {
+    text-align: center;
+  }
+  
+  .programs .content .title {
+    margin-left: 2vw;
+    color: #2c2b2b;
+    text-align: left;
+
+  }
+  .programs .content .text {
+    color: #2c2b2b;
+    text-align: left;
+    padding: 1.5vw;
+
+  }
+section {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 80px 0 0;
+  }
+
+
+  section .content .cards {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 4vw;
+    padding: 0 10px;
+    justify-content: space-between;
+    width: 60vw;
+  }
+  
+section .content .cards .card {
+    padding: 40px 15px;
+    list-style: none;
+    border-radius: 5px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    width: 19vw;
+    text-align: center;
+    border: 1px solid #7dc7bbdf;
+  }
+
+  
+
+  .cards .card p {
+    padding: 0 15px;
+    margin-top: 5px;
+  }
+  .cards .card b {
+    padding: 0 5px;
+    color: #cd4343;
+    font-size: 23px;
+  }
+
+  .cards .card h3 {
+    padding: 0 15px;
+    margin-top: 5px;
+    
+  }
+  .btn{
+    border: 1px solid #ffffff;
+    background: none;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-family: "montserrat";
+    cursor: pointer;
+    margin: 10px;
+    transition: 0.8s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn1,.btn2{
+    color: #fdffff;
+  }
+  .btn1:hover,.btn2:hover{
+    color: #fdffff;
+    background-color: #639b92;
+  }
+  @media screen and (max-width: 1100px) {
+  
+    section > p {
+      text-align: center;
+    }
+  
+    .programs .content .cards .card  {
+      width:50vw;
+      margin-bottom: 30px;
+    }
+    .programs .content h2 {
+      font-size: 2rem;
+      text-align: center;
+    }
+    .cards .card h3{
+      font-size: 1rem;
+    }
+    .programs .content{
+      width: 90vw;
+      align-items: center;
+    }
+    
+
+  }
+  
+  @media screen and (max-width: 560px) {
+    section .cards .card {
+      width: 100%;
+      margin-bottom: 30px;
+    }
+  }

@@ -105,9 +105,6 @@ $conn->close();
                         </a>
                         <form method="POST" action="php/delete_emergency.php?lang=<?= $lang ?>" class="client-delete-form">
                             <input type="hidden" name="emergency_id" value="<?= $emergency['id'] ?>">
-                            <button type="submit" class="client-action-btn danger" onclick="return confirm('<?= $translations['confirm_delete'] ?? 'Are you sure you want to delete this request?' ?>')">
-                                <i class="bi bi-trash"></i> <?= $translations['delete'] ?? 'Delete' ?>
-                            </button>
                         </form>
                     </div>
                 </div>

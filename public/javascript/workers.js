@@ -188,19 +188,23 @@ function renderWorkersList(workers) {
         li.innerHTML = `
             <div class="card-content">
                 <h3>${worker.fname} ${worker.lname}</h3>
-                <p>${worker.skills}</p>
                 <div class="ratings">
                     <div class="stars" style="color: gold;">
                         ${starsHtml}
                     </div>
-                </div>
+                </div>   
+            <button class="btn btn2 take-appointment-btn"
+            data-worker-name="${worker.fname} ${worker.lname}"
+            data-worker-id="${worker.user_id}">
+            ${translations.appointment_btn}
+        </button>
                 <button class="btn btn4 add-review-btn"
-                    data-worker-name="${worker.fname} ${worker.lname}"
-                    data-worker-id="${worker.user_id}"
-                    data-worker-service="${worker.skills}">Add Your Review</button>
-                <button class="btn btn2 take-appointment-btn"
-                    data-worker-name="${worker.fname} ${worker.lname}"
-                    data-worker-id="${worker.user_id}">Take An Appointment</button>
+            data-worker-name="${worker.fname} ${worker.lname}"
+            data-worker-id="${worker.user_id}"
+            data-worker-service="${worker.skills}">
+            ${translations.review_btn}
+        </button>
+
             </div>
             <div class="card-image">
                 <img src="php/images/${worker.img}" class="worker">

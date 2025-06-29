@@ -19,7 +19,7 @@ if (file_exists($lang_file)) {
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $lang ?>">
+<html lang="<?= $lang ?>" dir="<?= $lang === 'ar' ? 'rtl' : 'ltr' ?>">
 <head>
     <link rel="stylesheet" href="css/search.css">
 </head>

@@ -24,7 +24,7 @@ $service_id = $_GET['service_id'] ?? null;
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $lang ?>">
+<html lang="<?= $lang ?>" dir="<?= $lang === 'ar' ? 'rtl' : 'ltr' ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +35,7 @@ $service_id = $_GET['service_id'] ?? null;
     <?php include_once "header.php"; ?>
 
     <button class="chatbot-toggler">
-        <a href="users.php?lang=<?= $lang ?>"><i class="bi bi-chat-left" style="color: white; font-size: 24px;"></i></a>
+        <a href="chatting/users.php?lang=<?= $lang ?>"><i class="bi bi-chat-left" style="color: white; font-size: 24px;"></i></a>
     </button>
         <br><button class="emergency-toggler">
         <a href="emergency.php"><i class="bi bi-exclamation-triangle-fill" style="color: white;font-size: 24px;"></i></a>
@@ -75,7 +75,7 @@ $service_id = $_GET['service_id'] ?? null;
     
     <!-- Appointment form -->
     <div class="blur-bg-overlay"></div>
-    <div class="form-popup">
+    <div class="form-popup" <?= ($lang == 'ar') ? 'dir="rtl"' : '' ?>>
         <span class="close-btn material-symbols-rounded">close</span>
         <div class="form-box appointment">
             <div class="form-content">
@@ -84,7 +84,6 @@ $service_id = $_GET['service_id'] ?? null;
                     <?= $translations['name_label'] ?? 'NAME' ?>: <h3 id="worker-name"></h3>
                     <input type="hidden" name="client_id" value="<?= $_SESSION['user_id'] ?>" required>
                     <input type="hidden" name="worker_id" id="worker-id">
-
                     <div class="input-field">
                         <label><?= $translations['date_label'] ?? 'Date' ?></label>
                         <input type="date" id="appointment-date" name="date" required>
@@ -109,37 +108,95 @@ $service_id = $_GET['service_id'] ?? null;
     </div>
 
     <!-- Review Popup -->
-    <div class="blur-bg-overlay-review"></div>
-    <div class="form-popup-review">
-        <span class="close-btn-review material-symbols-rounded">close</span>
-        <div class="form-boxx review">
-            <div class="form-contentt">
-                <form id="review-form" method="POST">
-                    <h2><?= $translations['add_review_for'] ?? 'Add Review for' ?> <span id="review-worker-name"></span></h2>
-                    <p style="color:#79bcb1; font-weight: bold;"><?= $translations['service_label'] ?? 'Service' ?>: <span id="review-worker-service" name="worker_service"></span></p>
-                    <input type="hidden" id="review-worker-id" name="worker_id">
-                    <input type="hidden" name="review_date" value="<?= date('Y-m-d') ?>">
-                    <input type="hidden" name="reviewType" value="worker">
+<!-- Review Form (hidden initially, shown on button click) -->
+<div class="blur-bg-overlay-review"></div>
+<div class="form-popup-review" <?= ($lang == 'ar') ? 'dir="rtl"' : '' ?>>
+    <span class="close-btn-review material-symbols-rounded">close</span>
+    <div class="form-boxx review">
+        <div class="form-contentt">
+            <form id="review-form" method="POST">
+                <h2>Add Review for <span id="review-worker-name"></span></h2>
+                <p>Service: <span id="review-worker-service" name="worker_service"></span></p>
+                <input type="hidden" id="review-worker-id" name="worker_id">
+                <input type="hidden" name="review_date" value="<?php echo date('Y-m-d'); ?>">
+                <input type="hidden" name="reviewType" value="worker">
 
-                    <div class="rating-criteria">
-                        <div class="criteria-item">
-                            <label><?= $translations['speed_rating'] ?? 'Speed' ?>:</label>
-                            <div class="star-rating">
-                                <!-- Star rating inputs remain the same -->
-                            </div>
+                <div class="rating-criteria">
+                    
+                    <div class="criteria-item">
+                        <label><?= $translations['speed_label'] ?></label>
+                        <div class="star-rating">
+                            <input type="radio" id="speed-5" name="speed_rating" value="5" required>
+                            <label for="speed-5">★</label>
+                            <input type="radio" id="speed-4" name="speed_rating" value="4">
+                            <label for="speed-4">★</label>
+                            <input type="radio" id="speed-3" name="speed_rating" value="3">
+                            <label for="speed-3">★</label>
+                            <input type="radio" id="speed-2" name="speed_rating" value="2">
+                            <label for="speed-2">★</label>
+                            <input type="radio" id="speed-1" name="speed_rating" value="1">
+                            <label for="speed-1">★</label>
                         </div>
-                        <!-- Other rating criteria -->
                     </div>
+                    
+                    <div class="criteria-item">
+                        <label><?= $translations['cleanliness_label'] ?></label>
+                        <div class="star-rating">
+                            <input type="radio" id="clean-5" name="cleanliness_rating" value="5" required>
+                            <label for="clean-5">★</label>
+                            <input type="radio" id="clean-4" name="cleanliness_rating" value="4">
+                            <label for="clean-4">★</label>
+                            <input type="radio" id="clean-3" name="cleanliness_rating" value="3">
+                            <label for="clean-3">★</label>
+                            <input type="radio" id="clean-2" name="cleanliness_rating" value="2">
+                            <label for="clean-2">★</label>
+                            <input type="radio" id="clean-1" name="cleanliness_rating" value="1">
+                            <label for="clean-1">★</label>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-item">
+                        <label><?= $translations['professionalism_label'] ?></label>
+                        <div class="star-rating">
+                            <input type="radio" id="prof-5" name="professionalism_rating" value="5" required>
+                            <label for="prof-5">★</label>
+                            <input type="radio" id="prof-4" name="professionalism_rating" value="4">
+                            <label for="prof-4">★</label>
+                            <input type="radio" id="prof-3" name="professionalism_rating" value="3">
+                            <label for="prof-3">★</label>
+                            <input type="radio" id="prof-2" name="professionalism_rating" value="2">
+                            <label for="prof-2">★</label>
+                            <input type="radio" id="prof-1" name="professionalism_rating" value="1">
+                            <label for="prof-1">★</label>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-item">
+                        <label><?= $translations['communication_label'] ?></label>
+                        <div class="star-rating">
+                            <input type="radio" id="comm-5" name="communication_rating" value="5" required>
+                            <label for="comm-5">★</label>
+                            <input type="radio" id="comm-4" name="communication_rating" value="4">
+                            <label for="comm-4">★</label>
+                            <input type="radio" id="comm-3" name="communication_rating" value="3">
+                            <label for="comm-3">★</label>
+                            <input type="radio" id="comm-2" name="communication_rating" value="2">
+                            <label for="comm-2">★</label>
+                            <input type="radio" id="comm-1" name="communication_rating" value="1">
+                            <label for="comm-1">★</label>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="input-field">
-                        <label for="comment"><?= $translations['detailed_feedback'] ?? 'Detailed Feedback' ?>:</label>
-                        <textarea id="comment" name="comment" rows="4" required></textarea>
-                    </div>
-                    <button type="submit"><?= $translations['submit_review'] ?? 'Submit Review' ?></button>
-                </form>
-            </div>
+                <div class="input-field">
+                    <label for="comment"><?= $translations['feedback_label'] ?></label>
+                    <textarea id="comment" name="comment" rows="4" required></textarea>
+                </div>
+                <button type="submit"><?= $translations['submit_btn'] ?></button>
+            </form>
         </div>
     </div>
+</div>
 
     <script>
         // Pass data to JavaScript
@@ -147,7 +204,12 @@ $service_id = $_GET['service_id'] ?? null;
             userId: <?= $_SESSION['user_id'] ?? 'null' ?>,
             currentLang: '<?= $lang ?>'
         };
+        const translations = {
+        review_btn: '<?= $translations["review_btn"] ?? "Add Your Review" ?>',
+        appointment_btn: '<?= $translations["appointment_btn"] ?? "Take An Appointment" ?>'
+    };
     </script>
+
     
     <script src="javascript/workers.js"></script>
     <script src="javascript/review.js"></script>
